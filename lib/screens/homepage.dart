@@ -62,7 +62,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool isPublic = true; // Toggle for Public/Private
+  bool isPublic = true;
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.more_vert, color: Colors.black),
-            onPressed: () {
-              // Add settings or menu functionality
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -96,13 +94,13 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundColor: Colors.green[300], // Placeholder color
+                  backgroundColor: Colors.green[300],
                   child: Text(
                     "K",
                     style: TextStyle(fontSize: 24, color: Colors.white),
                   ),
                 ),
-                SizedBox(width: 12), // Space between image and text
+                SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -126,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(height: 10),
 
-            // Image Grid Layout
+            // Image Layout
             Row(
               children: [
                 Expanded(
@@ -168,9 +166,7 @@ class _ProfilePageState extends State<ProfilePage> {
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {
-                  // Navigate to album page
-                },
+                onPressed: () {},
                 child: Text(
                   "View All",
                   style: TextStyle(color: Colors.green[700]),
@@ -186,7 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(height: 10),
 
-            // Toggle for Public / Private
+            // Toggle button for Public / Private
             Row(
               children: [
                 GestureDetector(
