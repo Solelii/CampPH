@@ -1,3 +1,4 @@
+import 'package:camph/screens/homepage.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatelessWidget {
@@ -75,9 +76,7 @@ class SignupPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const Placeholder(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const Homepage()),
                   );
                 },
                 child: const Text('Sign Up'),
