@@ -1,9 +1,9 @@
-import 'package:camph/campgroundsheet.dart';
+
 import 'package:flutter/material.dart';
 import 'screens/landing_page.dart';
 import 'screens/login_page.dart';
 import 'screens/signup_page.dart';
-import 'screens/homepage.dart';
+import 'screens/navigation_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -59,10 +59,10 @@ class MyApp extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Homepage()),
+                          MaterialPageRoute(builder: (context) => NavigationScreen()),
                         );
                       },
-                      child: const Text('Homepage'),
+                      child: const Text('Homescreen'),
                     ),
                   ],
                 );

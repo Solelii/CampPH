@@ -1,16 +1,17 @@
+import 'package:camph/screens/explore_screen.dart';
 import 'package:flutter/material.dart';
 
-class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+class NavigationScreen extends StatefulWidget {
+  const NavigationScreen({super.key});
 
   @override
-  State<Homepage> createState() => _HomepageState();
+  State<NavigationScreen> createState() => _NavigationScreenState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _NavigationScreenState extends State<NavigationScreen> {
   int index = 0;
   final screens = [
-    Center(child: Text('Explore')),
+    ExploreScreen(),
     Center(child: Text('Saved')),
     Center(child: Text('Profile')),
   ];
