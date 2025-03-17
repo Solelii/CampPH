@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
+import 'signup_page.dart';
 
 class LandingPage extends StatelessWidget {
-  const LandingPage();
+  const LandingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('My Home Page')),
       backgroundColor: Color(0xFFFFF2CA),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center, // Center vertically
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text('Logo'),
             Container(
@@ -21,7 +21,7 @@ class LandingPage extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF643E37),
-                  foregroundColor: Colors.white, // Set text color to white
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -30,9 +30,7 @@ class LandingPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const Placeholder(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
                   );
                 },
                 child: const Text('Login'),
@@ -45,7 +43,7 @@ class LandingPage extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF643E37),
-                  foregroundColor: Colors.white, // Set text color to white
+                  foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
@@ -54,9 +52,7 @@ class LandingPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const Placeholder(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const SignupPage()),
                   );
                 },
                 child: const Text('Signup'),
