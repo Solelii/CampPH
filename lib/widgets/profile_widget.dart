@@ -64,10 +64,10 @@ class _ProfilePageState extends State<ProfilePage> {
               children: [
                 Expanded(
                   child: Container(
-                    height: 80,
+                    height: 250,
                     decoration: BoxDecoration(
                       color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                 ),
@@ -76,18 +76,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       Container(
-                        height: 38,
+                        height: 122,
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: 8),
                       Container(
-                        height: 38,
+                        height: 122,
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                       ),
                     ],
@@ -99,7 +99,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // View All Button
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: TextButton(
                 onPressed: () {},
                 child: Text(
