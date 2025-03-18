@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:camph/widgets/profile_widget.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -12,7 +13,7 @@ class _HomepageState extends State<Homepage> {
   final screens = [
     Center(child: Text('Explore')),
     Center(child: Text('Saved')),
-    Center(child: Text('Profile')),
+    ProfilePage(),
   ];
 
   @override
