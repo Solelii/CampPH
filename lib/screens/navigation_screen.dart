@@ -1,5 +1,6 @@
 import 'package:camph/screens/explore_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:camph/widgets/profile_widget.dart';
 
 class NavigationScreen extends StatefulWidget {
   const NavigationScreen({super.key});
@@ -37,11 +38,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
               selectedIcon: Icon(Icons.explore, color: Color(0xFF234F1E)),
               icon: Icon(Icons.explore, color: Colors.grey),
               label: 'Explore',
-            ),
-            NavigationDestination(
-              selectedIcon: Icon(Icons.bookmark, color: Color(0xFF234F1E)),
-              icon: Icon(Icons.bookmark_border, color: Colors.grey),
-              label: 'Saved',
             ),
             NavigationDestination(
               selectedIcon: Icon(Icons.person, color: Color(0xFF234F1E)),
