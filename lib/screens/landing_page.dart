@@ -13,7 +13,7 @@ class LandingPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Logo'),
+            Image.asset('assets/images/CamPH_Logo.jpg'),
             Container(
               height: 50,
               margin: const EdgeInsets.only(bottom: 20),
