@@ -11,11 +11,7 @@ class NavigationScreen extends StatefulWidget {
 
 class _NavigationScreenState extends State<NavigationScreen> {
   int index = 0;
-  final screens = [
-    ExploreScreen(),
-    Center(child: Text('Saved')),
-    Center(child: Text('Profile')),
-  ];
+  final screens = [ExploreScreen(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {
