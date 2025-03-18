@@ -14,6 +14,11 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        title: Text("Profile"),
+        leading: IconButton(onPressed: () => {}, icon: Icon(Icons.arrow_back)),
+        actions: [IconButton(onPressed: () => {}, icon: Icon(Icons.more_vert))],
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
