@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/homepage_search.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -10,7 +11,7 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   int index = 0;
   final screens = [
-    Center(child: Text('Explore')),
+    Center(child: SearchBarApp()),
     Center(child: Text('Saved')),
     Center(child: Text('Profile')),
   ];
