@@ -1,8 +1,10 @@
+import 'package:camph/widgets/review_section_widget.dart';
 import 'package:flutter/material.dart';
 import 'screens/landing_page.dart';
 import 'screens/login_page.dart';
 import 'screens/signup_page.dart';
 import 'screens/homepage.dart';
+import 'widgets/review_section_widget.dart';
 
 void main() => runApp(const MyApp());
 
@@ -62,6 +64,17 @@ class MyApp extends StatelessWidget {
                         );
                       },
                       child: const Text('Homepage'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReviewSection(),
+                          ),
+                        );
+                      },
+                      child: const Text('reviews'),
                     ),
                   ],
                 );
