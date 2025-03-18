@@ -137,7 +137,7 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
 
               Divider(),
 
-              // Location & Contact
+              // Location and Contact
               _infoTile(Icons.location_on, widget.location),
 
               Divider(),
