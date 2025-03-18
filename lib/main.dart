@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'screens/landing_page.dart';
 import 'screens/login_page.dart';
@@ -59,7 +58,9 @@ class MyApp extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => NavigationScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => NavigationScreen(),
+                          ),
                         );
                       },
                       child: const Text('Homescreen'),
