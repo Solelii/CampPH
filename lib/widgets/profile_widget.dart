@@ -10,6 +10,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   bool isPublic = true;
 
+  Map<String, bool> selectableButtons = {
+    "River": false,
+    "Beach": false,
+    "Mountain": false,
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,6 +126,7 @@ class _ProfilePageState extends State<ProfilePage> {
             // Toggle button for Public / Private
             Row(
               children: [
+                // Public Button
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -141,6 +148,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 SizedBox(width: 10),
+
+                // Private Button
                 GestureDetector(
                   onTap: () {
                     setState(() {
@@ -161,6 +170,51 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                SizedBox(width: 15),
+
+                // Divider
+                Container(width: 1.5, height: 30, color: Colors.grey[700]),
+
+                SizedBox(width: 10),
+
+                ...selectableButtons.keys.map((tag) {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ), // Spacing after each tag button
+                    child: SizedBox(
+                      width: 80, // Fixed width for all tag buttons
+                      child: GestureDetector(
+                        onTap:
+                            () => setState(
+                              () =>
+                                  selectableButtons[tag] =
+                                      !selectableButtons[tag]!,
+                            ),
+                        child: Container(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          decoration: BoxDecoration(
+                            color:
+                                selectableButtons[tag]!
+                                    ? Color(0xFF3B862D)
+                                    : Colors.grey[300],
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            tag,
+                            style: TextStyle(
+                              color:
+                                  selectableButtons[tag]!
+                                      ? Colors.white
+                                      : Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
               ],
             ),
           ],
