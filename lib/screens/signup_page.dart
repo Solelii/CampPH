@@ -1,4 +1,4 @@
-import 'package:camph/screens/navigation_screen.dart';
+import 'package:camph/widgets/navigation_screen.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatelessWidget {

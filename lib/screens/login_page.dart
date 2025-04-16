@@ -1,4 +1,4 @@
-import 'package:camph/screens/navigation_screen.dart';
+import 'package:camph/widgets/navigation_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -63,7 +63,7 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(builder: (context) => const NavigationScreen()),
                   );

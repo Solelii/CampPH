@@ -1,6 +1,38 @@
+
+/* Authored by: Khurt Dilanco
+  Company: Blue Team
+  Project: Project CampH
+  Feature: [CMPH-004] Draggable Scrollable Sheet
+  Description: 
+
+  This sheet displays the information about the camping site.
+
+  Objectives:
+
+    Implement clickable map markers (Marker in google_maps_flutter)
+
+    Create Sliding Card UI (Use DraggableScrollableSheet)
+
+    Add Overview Content (name, images, reviews, etc.)
+
+    Implement smooth sliding animation
+
+    Design Two Tabs (About & Reviews) using TabBar
+    
+ */
+
+
 import 'package:flutter/material.dart';
 
 class CampgroundSheet extends StatefulWidget {
+
+  /*
+
+    camping ground info to be fetched
+    may kulang pa na param for review, etc.
+    basta si info ni
+
+  */
   
   final void closeSheet;
 
@@ -62,6 +94,11 @@ class CampgroundSheet extends StatefulWidget {
 class _CampgroundSheetState extends State<CampgroundSheet> {
   @override
   Widget build(BuildContext context) {
+
+    // DraggableScrollableSheet
+    // a sheet is basically a widget that slides from the bottom of the screen
+    // + draggable and scrollable, thus the name draggable scrollable sheet
+
     return DraggableScrollableSheet(
       initialChildSize: 0.3,
       minChildSize: 0.0,
@@ -124,6 +161,8 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
                         child: SizedBox(height: 100, width: 130),
                       ),
 
+                      // A box used for alignment
+
                       SizedBox(height: 4.5),
                       
                       Container(
@@ -134,6 +173,8 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
                   )
                 ],
               ),
+
+              // Basically a divider ----------------------------------
 
               Divider(),
 
@@ -182,12 +223,18 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
     );
   }
 
+// custom widget
+// location, phone number, social media link
+
   Widget _infoTile(IconData icon, String text) {
     return ListTile(
       leading: Icon(icon, color: Colors.green),
       title: Text(text),
     );
   }
+
+// custom widget
+// used for tags
 
   Widget _feature(String label, bool available) {
     return Chip(
