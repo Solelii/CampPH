@@ -50,10 +50,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
+/*
+  PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight + 100),
         child: Padding(
           padding: const EdgeInsets.only(top: 30, left: 15, right: 15),
@@ -98,18 +96,87 @@ class _ExploreScreenState extends State<ExploreScreen> {
           )
         ),
       ),
-      body: FlutterMap(
-        options: MapOptions(
-          initialCenter: LatLng(13.41, 122.56),
-          initialZoom: 7.0,
-        ),
+
+*/
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
         children: [
-          TileLayer(
-            urlTemplate: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
+          GestureDetector(
+            child: FlutterMap(
+              options: MapOptions(  
+                initialCenter: LatLng(13.41, 122.56),
+                initialZoom: 7.0,
+              ),
+              children: [
+                /*
+
+                  {s} = subdomain
+                  {z} = zoom level
+                  {x} = x-coordinate
+                  {y} = y-coordinate
+
+                */
+                TileLayer(
+                  urlTemplate: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+                  subdomains: ['a', 'b', 'c'],
+                ),
+
+                SafeArea(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top,
+                      left: 15,
+                      right: 15,
+                    ),
+                    child: SearchAnchor(
+                      builder: (BuildContext context, SearchController controller) {
+                        return SearchBar(
+                          controller: controller,
+                          padding: const WidgetStatePropertyAll<EdgeInsets>(
+                            EdgeInsets.symmetric(horizontal: 16.0),
+                          ),
+                          onTap: () {
+                            controller.openView();
+                          },
+                          onChanged: (_) {
+                            controller.openView();
+                          },
+                          leading: const Icon(Icons.location_on),
+                          hintText: 'Search here',
+                          textStyle: WidgetStateProperty.all(
+                            const TextStyle(color: AppColors.gray),
+                          ),
+                        );
+                      },
+                      suggestionsBuilder: (BuildContext context, SearchController controller) {
+                        return List<ListTile>.generate(5, (int index) {
+                          final String item = 'item $index';
+                          return ListTile(
+                            title: Text(item),
+                            onTap: () {
+                              setState(() {
+                                controller.closeView(item);
+                              });
+                            },
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                )
+              ],
+            )
           ),
         ],
-      )
+      ),
+      bottomNavigationBar: SafeArea(
+        child: Row(
+          
+        )
+      ),
     );
   }
 }

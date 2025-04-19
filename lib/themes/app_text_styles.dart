@@ -9,7 +9,8 @@ class AppTextStyles {
     fontSize: 24,
     fontWeight: FontWeight.normal,
     color: AppColors.black,
-    letterSpacing: -2
+    letterSpacing: -2,
+    
   );
 
 // Campsite name (in sheet)

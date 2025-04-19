@@ -1,79 +1,197 @@
+import 'package:camph/themes/app_colors.dart';
+import 'package:camph/themes/app_text_styles.dart';
 import 'package:camph/widgets/navigation_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-class LoginPage extends StatelessWidget {
+
+class LoginPage extends StatefulWidget {
+
   const LoginPage({super.key});
+
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LoginPage createState() => _LoginPage();
+  
+}
+
+class _LoginPage extends State<LoginPage> {
+
+  bool _obscureText = true;
+
+  double fieldWidth = 0.0;
+  double fieldHeight = 0.0;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+
+    fieldWidth = MediaQuery.of(context).size.width * .7;
+    
+    fieldHeight = MediaQuery.of(context).size.height * .1;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFFFF2CA),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Text('Back'),
-        ),
-      ),
-      backgroundColor: Color(0xFFFFF2CA),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter Email',
-                ),
+      body: Form(
+        key: _formKey,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 30),
+                child: RichText(
+                    text: TextSpan(
+                      text: 'Login to your account',
+                      style: TextStyle(
+                        color: AppColors.black,
+                        letterSpacing: -0.2,
+                        fontWeight: FontWeight.w700,
+                        fontSize: AppTextStyles.header1.fontSize
+                      )
+                    ),
+                )
               ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter Password',
-                ),
-              ),
-            ),
-            Container(
-              height: 50,
-              margin: const EdgeInsets.only(bottom: 20),
-              width: MediaQuery.of(context).size.width * 0.7,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF643E37),
-                  foregroundColor: Colors.white, // Set text color to white
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              SizedBox(
+                width: fieldWidth,
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Username is required.';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.white2,
+                    border: OutlineInputBorder(),
+                    labelText: 'Username',
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    labelStyle: TextStyle(
+                      color: AppColors.gray,
+                      letterSpacing: -0.2,
+                      fontSize: AppTextStyles.body1.fontSize
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const NavigationScreen()),
-                  );
-                },
-                child: const Text('Login'),
               ),
-            ),
-          ],
+              SizedBox(height: 30),
+              SizedBox(
+                width: fieldWidth,
+                child: TextFormField(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Password is required.';
+                    }
+                    return null;
+                  },
+                  cursorColor: AppColors.veryDarkGreen,
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: AppColors.white2,
+                    border: OutlineInputBorder(),
+                    labelText: 'Password',
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                    labelStyle: TextStyle(
+                      color: AppColors.gray,
+                      letterSpacing: -0.2,
+                      fontSize: AppTextStyles.body1.fontSize
+                    ),
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        setState((){
+                          _obscureText = !_obscureText;
+                        });
+                      }, 
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off
+                      )
+                    )
+                  ),
+                ),
+              ),
+              Container(
+                height: 50,
+                margin: const EdgeInsets.only(top: 30),
+                width: fieldWidth,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.darkGreen,
+                    foregroundColor: AppColors.black,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()){
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NavigationScreen()),
+                      );
+                    }
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Login',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        letterSpacing: -0.2,
+                        fontWeight: FontWeight.normal,
+                        fontSize: AppTextStyles.header3.fontSize
+                      )
+                    ),
+                  ),
+                ),
+              ),
+
+              Container(
+                width: fieldWidth,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.gray,
+                        thickness: 1,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "OR",
+                        style: TextStyle(
+                          color: AppColors.gray,
+                          fontSize: AppTextStyles.body2.fontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Divider(
+                        color: AppColors.gray,
+                        thickness: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 50,
+                width: fieldWidth,
+                child: SignInButton(
+                  Buttons.Google,
+                  onPressed: () {
+                    //To do
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
+
 }

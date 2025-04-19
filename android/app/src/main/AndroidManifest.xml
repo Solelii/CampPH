@@ -31,6 +31,18 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!-- Ask permission to access user location, even if the app is in the background
+        access fine location -> uses GPS
+        access coarse location -> uses Wi-Fi connection and cell towers. Less accurate than gps, but less power consumption
+        access background location -> used to access location even when the app is in the background
+        -->
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and
          https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.

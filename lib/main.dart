@@ -2,11 +2,13 @@ import 'package:camph/screens/explore_screen.dart';
 import 'package:camph/widgets/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:latlong2/latlong.dart';
 import 'screens/landing_page.dart';
 import 'screens/login_page.dart';
 import 'screens/signup_page.dart';
 import 'widgets/navigation_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() {
 
@@ -75,7 +77,35 @@ class _MyAppState extends State<MyApp> {
 
   }
 
-  
+  // Future<LatLng> getInitialMapPosition() async {
+
+  //   final prefs = await SharedPreferences.getInstance();
+
+  //   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   LocationPermission permission = await Geolocator.checkPermission();
+
+  //   // Request permission if not already granted
+  //   if (permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+  //     permission = await Geolocator.requestPermission();
+  //   }
+
+  //   if (serviceEnabled && (permission == LocationPermission.always || permission == LocationPermission.whileInUse)) {
+  //     try {
+  //       Position position = await Geolocator.getCurrentPosition(
+  //         desiredAccuracy: LocationAccuracy.high,
+  //       );
+
+  //       // Save for later use
+  //       await prefs.setDouble('lastLat', position.latitude);
+  //       await prefs.setDouble('lastLng', position.longitude);
+
+  //       return LatLng(position.latitude, position.longitude);
+  //     } catch (e) {
+  //       print("Error getting location: $e");
+  //     }
+
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
