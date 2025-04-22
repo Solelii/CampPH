@@ -17,9 +17,10 @@ class AppTextStyles {
 
   static const TextStyle header2 = TextStyle(
     fontSize: 20,
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.w500,
     color: AppColors.black,
-    letterSpacing: -2
+    letterSpacing: -2,
+    fontFamily: 'Inter'
   );
 
 // Input label (in add campsite)
@@ -52,9 +53,10 @@ class AppTextStyles {
 // subtext in add campsite
 
   static const TextStyle subtext1 = TextStyle(
-    fontSize: 8,
-    fontWeight: FontWeight.normal,
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
     color: AppColors.gray,
-    letterSpacing: -2
+    letterSpacing: -2,
+    fontFamily: 'Inter'
   );
 }

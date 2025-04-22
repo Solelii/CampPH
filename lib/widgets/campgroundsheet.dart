@@ -22,6 +22,8 @@
  */
 
 
+import 'package:campph/themes/app_colors.dart';
+import 'package:campph/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:campph/data_class/data_class.dart';
 
@@ -39,7 +41,8 @@ class CampgroundSheet extends StatefulWidget {
 
   final String name;
   final bool isPublic;
-  final double? rating;
+  final double rating;
+  final int numOfPWRate;
 
   final String address;
   final String socialMediaLink;
@@ -93,6 +96,7 @@ class CampgroundSheet extends StatefulWidget {
     required this.name,
     required this.isPublic,
     required this.rating,
+    required this.numOfPWRate,
     required this.address,
     required this.socialMediaLink,
     required this.phoneNumber,
@@ -153,7 +157,7 @@ class CampgroundSheet extends StatefulWidget {
 
     required this.visibility,
 
-    required this.closeSheet
+    required this.closeSheet,
 
   });
 
@@ -174,9 +178,9 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
       minChildSize: 0.0,
       maxChildSize: 1.0,
       builder: (context, scrollController) {
-        return  Container(
+        return Container(
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: AppColors.white2,
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: ListView(
@@ -196,17 +200,49 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
               ),
               SizedBox(height: 10),
 
-              Text(widget.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(widget.name, style: AppTextStyles.header2),
+                  //temp, add functionality to replace icon with .bookmark only when the campsite is saved
+                  Icon(
+                    Icons.bookmark_border,
+                    color: AppColors.black
+                  )
+                ],
+              ),
 
               SizedBox(height: 10),
 
-              // Rating
               Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber),
-                  Text("${widget.rating}"),
+                children: 
+                [
+                  Text("${widget.rating}", style: AppTextStyles.subtext1),
+
+                  SizedBox(width: 10),
+
+                  for (int i = 0; i < 5; i++)
+                    if (widget.rating > i)
+                      Icon(
+                        Icons.star, 
+                        color: AppColors.yellow,
+                        size: 16
+                      )
+                    else
+                      Icon(
+                        Icons.star, 
+                        color: AppColors.gray,
+                        size: 16
+                      )
+                    ,
+
+                  SizedBox(width: 10),
+
+                  Text("(${widget.numOfPWRate})", style: AppTextStyles.subtext1)
+
                 ],
               ),
+
               SizedBox(height: 10),
 
               Row(
