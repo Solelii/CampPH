@@ -1,14 +1,10 @@
-import 'package:camph/screens/explore_screen.dart';
-import 'package:camph/widgets/profile_widget.dart';
+import 'package:campph/screens/explore_screen.dart';
+import 'package:campph/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:latlong2/latlong.dart';
-import 'screens/landing_page.dart';
 import 'screens/login_page.dart';
 import 'screens/signup_page.dart';
-import 'widgets/navigation_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:geolocator/geolocator.dart';
 
 void main() {
 

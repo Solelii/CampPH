@@ -21,15 +21,15 @@
 
  */
 
-import 'package:camph/themes/app_colors.dart';
-import 'package:camph/widgets/campgroundsheet.dart';
+import 'package:campph/themes/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:camph/widgets/search.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 
 class ExploreScreen extends StatefulWidget {
+  const ExploreScreen({super.key});
+
   @override
   _ExploreScreenState createState() => _ExploreScreenState();
 }
@@ -37,6 +37,14 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen> {
   
   bool _isSheetOpen = false;
+
+  late double _currentZoom;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentZoom = 7.0;
+  }
 
   void _toggleSheet() {
     setState(() {
@@ -50,133 +58,130 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
   }
 
-/*
-  PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight + 100),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30, left: 15, right: 15),
-          child: SearchAnchor(
-            builder: (BuildContext context, SearchController controller) {
-              return SearchBar(
-                controller: controller,
-                padding: const WidgetStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
-                ),
-                onTap: () {
-                  controller.openView();
-                },
-                onChanged: (_) {
-                  controller.openView();
-                },
-                leading: const Icon(Icons.location_on),
-                hintText: 'Search here',
-                textStyle: WidgetStateProperty.all(
-                  const TextStyle(color: AppColors.gray),
-                ),
-              );
-            }, 
-            suggestionsBuilder: (BuildContext context, SearchController controller) {
-              /*
-
-                To be replaced recently searched campsites
-
-              */
-              return List<ListTile>.generate(5, (int index) {
-                final String item = 'item $index';
-                return ListTile(
-                  title: Text(item),
-                  onTap: () {
-                    setState(() {
-                      controller.closeView(item);
-                    });
-                  },
-                );
-              });
-            },
-          )
-        ),
-      ),
-
-*/
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          GestureDetector(
-            child: FlutterMap(
-              options: MapOptions(  
-                initialCenter: LatLng(13.41, 122.56),
-                initialZoom: 7.0,
+    return Stack(
+      children: [
+        GestureDetector(
+          child: FlutterMap(
+            options: MapOptions(  
+              initialCenter: LatLng(13.41, 122.56),
+              initialZoom: _currentZoom,
+              onPositionChanged: (MapPosition position, bool hasGesture) {
+                setState(() {
+                  _currentZoom = position.zoom ?? _currentZoom;
+                });
+              },
+            ),
+            children: [
+              /*
+
+                {s} = subdomain
+                {z} = zoom level
+                {x} = x-coordinate
+                {y} = y-coordinate
+
+              */
+              TileLayer(
+                urlTemplate: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c'],
               ),
-              children: [
-                /*
-
-                  {s} = subdomain
-                  {z} = zoom level
-                  {x} = x-coordinate
-                  {y} = y-coordinate
-
-                */
-                TileLayer(
-                  urlTemplate: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-                  subdomains: ['a', 'b', 'c'],
-                ),
-
-                SafeArea(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top,
-                      left: 15,
-                      right: 15,
-                    ),
-                    child: SearchAnchor(
-                      builder: (BuildContext context, SearchController controller) {
-                        return SearchBar(
-                          controller: controller,
-                          padding: const WidgetStatePropertyAll<EdgeInsets>(
-                            EdgeInsets.symmetric(horizontal: 16.0),
-                          ),
+              SafeArea(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top,
+                    left: 15,
+                    right: 15,
+                  ),
+                  child: SearchAnchor(
+                    builder: (BuildContext context, SearchController controller) {
+                      return SearchBar(
+                        controller: controller,
+                        padding: const WidgetStatePropertyAll<EdgeInsets>(
+                          EdgeInsets.symmetric(horizontal: 16.0),
+                        ),
+                        onTap: () {
+                          controller.openView();
+                        },
+                        onChanged: (_) {
+                          controller.openView();
+                        },
+                        leading: const Icon(Icons.location_on),
+                        hintText: 'Search here',
+                        textStyle: WidgetStateProperty.all(
+                          const TextStyle(color: AppColors.gray),
+                        ),
+                      );
+                    },
+                    suggestionsBuilder: (BuildContext context, SearchController controller) {
+                      return List<ListTile>.generate(5, (int index) {
+                        final String item = 'item $index';
+                        return ListTile(
+                          title: Text(item),
                           onTap: () {
-                            controller.openView();
+                            setState(() {
+                              controller.closeView(item);
+                            });
                           },
-                          onChanged: (_) {
-                            controller.openView();
-                          },
-                          leading: const Icon(Icons.location_on),
-                          hintText: 'Search here',
-                          textStyle: WidgetStateProperty.all(
-                            const TextStyle(color: AppColors.gray),
-                          ),
                         );
-                      },
-                      suggestionsBuilder: (BuildContext context, SearchController controller) {
-                        return List<ListTile>.generate(5, (int index) {
-                          final String item = 'item $index';
-                          return ListTile(
-                            title: Text(item),
-                            onTap: () {
-                              setState(() {
-                                controller.closeView(item);
-                              });
+                      });
+                    },
+                  ),
+                ),
+              ),
+              //temp
+                MarkerLayer(
+                  markers: [
+                    Marker(
+                      width: 40,
+                      height: 40,
+                      point: LatLng(13.41, 122.56),
+                      child: GestureDetector(
+                        onTap: (){
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            builder: (BuildContext context) {
+                              return DraggableScrollableSheet(
+                                initialChildSize: 0.2,
+                                minChildSize: 0.1,
+                                maxChildSize: 0.8,
+                                expand: false,
+                                builder: (BuildContext context, ScrollController scrollController) {
+                                  return Container(
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                      boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black26)],
+                                    ),
+                                    child: ListView.builder(
+                                      controller: scrollController,
+                                      itemCount: 25,
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          leading: const Icon(Icons.place),
+                                          title: Text('Location Info #$index'),
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                              );
                             },
                           );
-                        });
-                      },
+                        },
+                        child: Image.asset(
+                          'assets/images/markers/woods_public.png',
+                          fit: BoxFit.contain,
+                        ),
+                      )
                     ),
-                  ),
-                )
-              ],
-            )
-          ),
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Row(
-          
-        )
-      ),
+                  ],
+                ),
+            ],
+          )
+        ),
+      ],
     );
   }
 }

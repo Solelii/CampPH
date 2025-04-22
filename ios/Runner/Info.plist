@@ -46,12 +46,9 @@
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true/>
 		<key>UIStatusBarHidden</key>
-
 		<!-- Used to ask for user's location, even if the app is in the background-->
-		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+		<false/>
 		<string>We need your location to show nearby campsites.</string>
-
-
 		<false/>
 	</dict>
 </plist>

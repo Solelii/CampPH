@@ -1,15 +1,15 @@
-import 'package:camph/screens/explore_screen.dart';
+import 'package:campph/screens/explore_screen.dart';
+import 'package:campph/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:camph/widgets/profile_widget.dart';
 
-class NavigationScreen extends StatefulWidget {
-  const NavigationScreen({super.key});
+class NavigationWidget extends StatefulWidget {
+  const NavigationWidget({super.key});
 
   @override
-  State<NavigationScreen> createState() => _NavigationScreenState();
+  State<NavigationWidget> createState() => _NavigationWidget();
 }
 
-class _NavigationScreenState extends State<NavigationScreen> {
+class _NavigationWidget extends State<NavigationWidget> {
   int index = 0;
   final screens = [ExploreScreen(), ProfilePage()];
 

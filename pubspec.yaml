@@ -1,4 +1,4 @@
-name: camph
+name: campph
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -48,14 +48,14 @@ dependencies:
 
 flutter_native_splash:
   color: "#EDEDED"
-  image: "assets/images/CampPHSplashIcon.png"
+  image: "assets/images/CampPHSplashIcon2.png"
   android: true
   ios: true
   web: true
 
   android_12:
     color: "#EDEDED"
-    image: "assets/images/CampPHSplashIcon.png"
+    image: "assets/images/CampPHSplashIcon2.png"
     android: true
     ios: true
     web: true
@@ -89,6 +89,13 @@ flutter:
 
   assets:
     - 'assets/images/CampPHSplashIcon.png'
+    - 'assets/images/CampPHSplashIcon2.png'
+    - 'assets/images/markers/water_public.png'
+    - 'assets/images/markers/water_private.png'
+    - 'assets/images/markers/woods_private.png'
+    - 'assets/images/markers/woods_public.png'
+    - 'assets/images/markers/glamping.png'
+    
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

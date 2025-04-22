@@ -1,6 +1,6 @@
-import 'package:camph/themes/app_colors.dart';
-import 'package:camph/themes/app_text_styles.dart';
-import 'package:camph/widgets/navigation_screen.dart';
+import 'package:campph/themes/app_colors.dart';
+import 'package:campph/themes/app_text_styles.dart';
+import 'package:campph/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
@@ -128,7 +128,7 @@ class _LoginPage extends State<LoginPage> {
                     if (_formKey.currentState!.validate()){
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const NavigationScreen()),
+                        MaterialPageRoute(builder: (context) => const NavigationWidget()),
                       );
                     }
                   },
