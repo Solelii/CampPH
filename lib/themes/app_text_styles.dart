@@ -9,7 +9,7 @@ class AppTextStyles {
     fontSize: 24,
     fontWeight: FontWeight.normal,
     color: AppColors.black,
-    letterSpacing: -2,
+    letterSpacing: -0.2,
     
   );
 
@@ -19,7 +19,7 @@ class AppTextStyles {
     fontSize: 20,
     fontWeight: FontWeight.w500,
     color: AppColors.black,
-    letterSpacing: -2,
+    letterSpacing: -0.2,
     fontFamily: 'Inter'
   );
 
@@ -29,7 +29,7 @@ class AppTextStyles {
     fontSize: 15,
     fontWeight: FontWeight.normal,
     color: AppColors.black,
-    letterSpacing: -2
+    letterSpacing: -0.2
   );  
 
 // User input (in add campsite) + rate and review text, write a review, and filter tabs in sheet, and add photo text
@@ -38,7 +38,7 @@ class AppTextStyles {
     fontSize: 13,
     fontWeight: FontWeight.normal,
     color: AppColors.black,
-    letterSpacing: -2
+    letterSpacing: -0.2
   );
 
 // User input + about and review in sheet, and filter chips
@@ -47,7 +47,7 @@ class AppTextStyles {
     fontSize: 11,
     fontWeight: FontWeight.normal,
     color: AppColors.black,
-    letterSpacing: -2
+    letterSpacing: -0.2
   );
 
 // subtext in add campsite
@@ -56,7 +56,7 @@ class AppTextStyles {
     fontSize: 14,
     fontWeight: FontWeight.w500,
     color: AppColors.gray,
-    letterSpacing: -2,
+    letterSpacing: -0.2,
     fontFamily: 'Inter'
   );
 }
