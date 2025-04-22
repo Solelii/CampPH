@@ -23,6 +23,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:campph/data_class/data_class.dart';
 
 class CampgroundSheet extends StatefulWidget {
 
@@ -38,53 +39,122 @@ class CampgroundSheet extends StatefulWidget {
 
   final String name;
   final bool isPublic;
-  final double rating;
+  final double? rating;
 
-  final String location;
+  final String address;
   final String socialMediaLink;
   final String phoneNumber;
+  final String description;
 
-  final bool firePit;
-  final bool restroom;
+  final String naturalFeature;
+
+  final List<String> imageUrls;
+
+  final bool isGlampingSite;
+
+  final List<String> typeOfShelter;
+
+  final List<Units> listOfUnitsAndAmenities;
+
+  final bool outdoorGrill;
+  final bool firePitOrBonfire;
+  final bool tentRental;
+  final bool hammockRental;
+
+  final bool soap;
+  final bool hairDryer;
+  final bool bathrobeOrTowel;
+  final bool bidet;
+
+  final bool privateAccess;
+  final bool emergencyCallSystem;
+  final bool guardsAvailable;
+  final bool firstAidKit;
+  final bool securityCameras;
+  final bool pwdFriendly;
+
+  final bool powerSource;
+  final bool electricFan;
+  final bool airConditioning;
+  final bool drinkingOrWashingWater;
+
+  final bool drinksAllowed;
   final bool petsAllowed;
-  final bool picnicTable;
-  final bool signal;
-  final bool shower;
-  final bool tapWater;
-  final bool firstAid;
-  final bool security;
-  final bool bikingTrails;
-  final bool hikingTrails;
-  final bool store;
-  final bool foodServices;
-  final bool lakesOrRiver;
-  final bool electricity;
-  final bool wifi;
+
+  final String rules;
+
+  final bool visibility;
 
   const CampgroundSheet({
     super.key,
+
+    // Campsite general info
+
     required this.name,
     required this.isPublic,
     required this.rating,
-    required this.location,
+    required this.address,
     required this.socialMediaLink,
     required this.phoneNumber,
-    required this.firePit,
-    required this.restroom,
+    required this.description,
+
+    // Natural features nearby
+
+    required this.naturalFeature,
+
+    // Pictures
+
+    required this.imageUrls,
+
+    // Campsite or Glampsite
+
+    required this.isGlampingSite,
+
+    // Types of shelters (bell tent, safari tent, etc.)
+
+    required this.typeOfShelter,
+
+    // Units and amenities
+
+    required this.listOfUnitsAndAmenities,
+
+    // Amenities
+
+    required this.outdoorGrill,
+    required this.firePitOrBonfire,
+    required this.tentRental,
+    required this.hammockRental,
+
+    required this.soap,
+    required this.hairDryer,
+    required this.bathrobeOrTowel,
+    required this.bidet,
+
+    required this.privateAccess,
+    required this.emergencyCallSystem,
+    required this.guardsAvailable,
+    required this.firstAidKit,
+    required this.securityCameras,
+    required this.pwdFriendly,
+
+    required this.powerSource,
+    required this.electricFan,
+    required this.airConditioning,
+    required this.drinkingOrWashingWater,
+
+    required this.drinksAllowed,
     required this.petsAllowed,
-    required this.picnicTable,
-    required this.signal,
-    required this.shower,
-    required this.tapWater,
-    required this.firstAid,
-    required this.security,
-    required this.bikingTrails,
-    required this.hikingTrails,
-    required this.store,
-    required this.foodServices,
-    required this.lakesOrRiver,
-    required this.electricity,
-    required this.wifi, this.closeSheet, 
+
+    // Rules for campers
+    
+    required this.rules,
+
+    // Visibility
+
+    required this.visibility,
+
+    required this.closeSheet
+
   });
 
   @override
@@ -128,12 +198,6 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
 
               Text(widget.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold,)),
 
-              // Public / Private Status
-              Row(
-                children: [
-                  Text(widget.isPublic ? "Public Campground" : "Private Campground"),
-                ],
-              ),
               SizedBox(height: 10),
 
               // Rating
@@ -179,7 +243,7 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
               Divider(),
 
               // Location and Contact
-              _infoTile(Icons.location_on, widget.location),
+              _infoTile(Icons.location_on, widget.address),
 
               Divider(),
               
@@ -194,28 +258,28 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
               // Features / Amenities
               Text("Features", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
-              Wrap(
-                spacing: 10,
-                runSpacing: 5,
-                children: [
-                  _feature("Fire Pit", widget.firePit),
-                  _feature("Restroom", widget.restroom),
-                  _feature("Pets Allowed", widget.petsAllowed),
-                  _feature("Picnic Table", widget.picnicTable),
-                  _feature("Signal", widget.signal),
-                  _feature("Shower", widget.shower),
-                  _feature("Tap Water", widget.tapWater),
-                  _feature("First Aid", widget.firstAid),
-                  _feature("Security", widget.security),
-                  _feature("Biking Trails", widget.bikingTrails),
-                  _feature("Hiking Trails", widget.hikingTrails),
-                  _feature("Store", widget.store),
-                  _feature("Food Services", widget.foodServices),
-                  _feature("Lakes/River", widget.lakesOrRiver),
-                  _feature("Electricity", widget.electricity),
-                  _feature("WiFi", widget.wifi),
-                ],
-              ),
+              // Wrap(
+              //   spacing: 10,
+              //   runSpacing: 5,
+              //   children: [
+              //     _feature("Fire Pit", widget.firePit),
+              //     _feature("Restroom", widget.restroom),
+              //     _feature("Pets Allowed", widget.petsAllowed),
+              //     _feature("Picnic Table", widget.picnicTable),
+              //     _feature("Signal", widget.signal),
+              //     _feature("Shower", widget.shower),
+              //     _feature("Tap Water", widget.tapWater),
+              //     _feature("First Aid", widget.firstAid),
+              //     _feature("Security", widget.security),
+              //     _feature("Biking Trails", widget.bikingTrails),
+              //     _feature("Hiking Trails", widget.hikingTrails),
+              //     _feature("Store", widget.store),
+              //     _feature("Food Services", widget.foodServices),
+              //     _feature("Lakes/River", widget.lakesOrRiver),
+              //     _feature("Electricity", widget.electricity),
+              //     _feature("WiFi", widget.wifi),
+              //   ],
+              // ),
             ],
           ),
         );

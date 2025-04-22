@@ -22,6 +22,7 @@
  */
 
 import 'package:campph/themes/app_colors.dart';
+import 'package:campph/widgets/campgroundsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -138,37 +139,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       point: LatLng(13.41, 122.56),
                       child: GestureDetector(
                         onTap: (){
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (BuildContext context) {
-                              return DraggableScrollableSheet(
-                                initialChildSize: 0.2,
-                                minChildSize: 0.1,
-                                maxChildSize: 0.8,
-                                expand: false,
-                                builder: (BuildContext context, ScrollController scrollController) {
-                                  return Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                                      boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black26)],
-                                    ),
-                                    child: ListView.builder(
-                                      controller: scrollController,
-                                      itemCount: 25,
-                                      itemBuilder: (context, index) {
-                                        return ListTile(
-                                          leading: const Icon(Icons.place),
-                                          title: Text('Location Info #$index'),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          );
+                          CampgroundSheet(
+                            
+                          )
                         },
                         child: Image.asset(
                           'assets/images/markers/woods_public.png',
