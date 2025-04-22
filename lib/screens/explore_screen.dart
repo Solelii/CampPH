@@ -26,6 +26,7 @@ import 'package:campph/widgets/campgroundsheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:campph/data_class/data_class.dart';
 
 
 class ExploreScreen extends StatefulWidget {
@@ -139,9 +140,80 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       point: LatLng(13.41, 122.56),
                       child: GestureDetector(
                         onTap: (){
-                          CampgroundSheet(
-                            
-                          )
+                          if(_isSheetOpen){
+                              CampgroundSheet(
+                                name: "Camp Kawayan",
+                                isPublic: true,
+                                rating: 4.5,
+                                address: "123 Tondo, Manila",
+                                socialMediaLink: "facebook.com/campkawayan",
+                                phoneNumber: "+63 912 345 6789", 
+                                description: '''
+                                  Nestled at the base of Mt. Kalinawan, Luntian Campgrounds offers a serene escape from the bustle of city life. Wake up to a sea of clouds and fall asleep under a blanket of stars.
+
+                                  Each campsite includes a fire pit, shared toilet and shower facilities, and access to scenic hiking trails.
+
+                                  For sleeping, guests may choose between primitive tent camping or our cozy furnished bell tents with queen-sized beds and solar-powered lights.
+
+                                  Ideal for couples, solo adventurers, and weekend warriors looking for a mix of raw nature and light comfort.
+
+                                  Nearby attractions include Kalinawan Falls, Bato Viewing Deck, and the Bayan Farmers Market (15 mins drive).
+                              ''', 
+                              naturalFeature: 'MountainRiverWoods', 
+                              imageUrls: ['a'], 
+                              isGlampingSite: false, 
+                              typeOfShelter: ['BellTent'], 
+                              listOfUnitsAndAmenities: [
+                                Units(
+                                  groundSleeping: true
+                                )
+                                ..guests = 2
+                                ..pillows = 2
+                                ..blanket = 1
+                                ..restroom = 0
+                              ],
+                              
+                              outdoorGrill: true,
+                              firePitOrBonfire: true,
+                              tentRental: true,
+                              hammockRental: true,
+
+                              soap: false,
+                              hairDryer: false,
+                              bathrobeOrTowel: false,
+                              bidet: false,
+
+                              privateAccess: false,
+                              emergencyCallSystem: false,
+                              guardsAvailable: false,
+                              firstAidKit: false,
+                              securityCameras: false,
+                              pwdFriendly: false,
+
+                              powerSource: false,
+                              electricFan: false,
+                              airConditioning: false,
+                              drinkingOrWashingWater: false,
+
+                              drinksAllowed: false,
+                              petsAllowed: false,
+
+                              rules: [
+                                "1. Respect quiet hours from 10:00 PM to 6:00 AM.",
+                                "2. Campfires are allowed only in designated fire pits. Please put them out completely before leaving.",
+                                "3. Keep the campsite clean — use trash bins or pack out all waste.",
+                                "4. Pets are welcome but must be leashed at all times.",
+                                "5. Do not disturb local wildlife or remove plants from the area.",
+                                "6. Alcohol is permitted, but please drink responsibly and avoid excessive noise.",
+                                "7. Use shared facilities responsibly and leave them clean for the next camper.",
+                                "8. Park only in designated parking areas to avoid damaging natural vegetation.",
+                                "9. Unauthorized loud music or parties are not allowed.",
+                                "10. Follow instructions from campsite staff at all times."
+                              ],
+                              visibility: true,
+                              closeSheet: false,
+                            );
+                          }
                         },
                         child: Image.asset(
                           'assets/images/markers/woods_public.png',
@@ -159,72 +231,3 @@ class _ExploreScreenState extends State<ExploreScreen> {
   }
 }
 
-//   @override
-//   Widget build(BuildContext context) {
-// // Stack is a widget that let's you stack widgets upon another widget
-
-//     return Stack(
-//       children: [
-
-// // Gesture detector is a gesture detector. it detects gestures, and let's you decide what to do with the info. in this case, it should've closed the draggable
-// //scrollable sheet, but there are still problems not fixed.
-
-//       GestureDetector(
-//         onTap: _closeSheet,
-//         child: Container(
-//           decoration: BoxDecoration(
-//             color: Color.fromARGB(0, 0, 0, 0)
-//           ),
-//         ),
-//       ),
-//       // Location Icon <temporary>
-//       Positioned(
-//         top: 200,
-//         left: 150,
-//         child: IconButton(
-//           icon: Icon(Icons.location_on, color: Colors.red, size: 40),
-//           onPressed: _toggleSheet,
-//         ),
-//       ),
-//       // Draggable Scrollable Sheet <temporary>
-//       if(_isSheetOpen)
-//         CampgroundSheet(
-//           name: "Camp Kawayan",
-//           isPublic: true,
-//           rating: 4.5,
-//           location: "123 Tondo, Manila",
-//           socialMediaLink: "facebook.com/campkawayan",
-//           phoneNumber: "+63 912 345 6789",
-//           firePit: true,
-//           restroom: true,
-//           petsAllowed: true,
-//           picnicTable: true,
-//           signal: false,
-//           shower: true,
-//           tapWater: true,
-//           firstAid: false,
-//           security: true,
-//           bikingTrails: true,
-//           hikingTrails: true,
-//           store: false,
-//           foodServices: true,
-//           lakesOrRiver: true,
-//           electricity: false,
-//           wifi: false, 
-//           closeSheet: _closeSheet,
-//       )
-//     ],
-// );
-//  }
-
-  // @override
-  // Widget build1(BuildContext context){
-
-  //   return Scaffold(
-  //     appBar: SearchBarApp(),
-  //     body: Stack(
-
-  //     ),
-  //   )
-
-  // }

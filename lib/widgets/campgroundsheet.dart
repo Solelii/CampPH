@@ -81,7 +81,7 @@ class CampgroundSheet extends StatefulWidget {
   final bool drinksAllowed;
   final bool petsAllowed;
 
-  final String rules;
+  final List<String> rules;
 
   final bool visibility;
 
