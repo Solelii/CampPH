@@ -4,20 +4,15 @@ import 'package:campph/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-
 class LoginPage extends StatefulWidget {
-
   const LoginPage({super.key});
-
 
   @override
   // ignore: library_private_types_in_public_api
   _LoginPage createState() => _LoginPage();
-  
 }
 
 class _LoginPage extends State<LoginPage> {
-
   bool _obscureText = true;
 
   double fieldWidth = 0.0;
@@ -26,9 +21,8 @@ class _LoginPage extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     fieldWidth = MediaQuery.of(context).size.width * .7;
-    
+
     fieldHeight = MediaQuery.of(context).size.height * .1;
 
     return Scaffold(
@@ -41,16 +35,16 @@ class _LoginPage extends State<LoginPage> {
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 30),
                 child: RichText(
-                    text: TextSpan(
-                      text: 'Login to your account',
-                      style: TextStyle(
-                        color: AppColors.black,
-                        letterSpacing: -0.2,
-                        fontWeight: FontWeight.w700,
-                        fontSize: AppTextStyles.header1.fontSize
-                      )
+                  text: TextSpan(
+                    text: 'Login to your account',
+                    style: TextStyle(
+                      color: AppColors.black,
+                      letterSpacing: -0.2,
+                      fontWeight: FontWeight.w700,
+                      fontSize: AppTextStyles.header1.fontSize,
                     ),
-                )
+                  ),
+                ),
               ),
               SizedBox(
                 width: fieldWidth,
@@ -70,7 +64,7 @@ class _LoginPage extends State<LoginPage> {
                     labelStyle: TextStyle(
                       color: AppColors.gray,
                       letterSpacing: -0.2,
-                      fontSize: AppTextStyles.body1.fontSize
+                      fontSize: AppTextStyles.body1.fontSize,
                     ),
                   ),
                 ),
@@ -96,18 +90,18 @@ class _LoginPage extends State<LoginPage> {
                     labelStyle: TextStyle(
                       color: AppColors.gray,
                       letterSpacing: -0.2,
-                      fontSize: AppTextStyles.body1.fontSize
+                      fontSize: AppTextStyles.body1.fontSize,
                     ),
                     suffixIcon: IconButton(
                       onPressed: () {
-                        setState((){
+                        setState(() {
                           _obscureText = !_obscureText;
                         });
-                      }, 
+                      },
                       icon: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off
-                      )
-                    )
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -125,10 +119,12 @@ class _LoginPage extends State<LoginPage> {
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()){
+                    if (_formKey.currentState!.validate()) {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => const NavigationWidget()),
+                        MaterialPageRoute(
+                          builder: (context) => const NavigationWidget(),
+                        ),
                       );
                     }
                   },
@@ -139,8 +135,8 @@ class _LoginPage extends State<LoginPage> {
                         color: AppColors.white,
                         letterSpacing: -0.2,
                         fontWeight: FontWeight.normal,
-                        fontSize: AppTextStyles.header3.fontSize
-                      )
+                        fontSize: AppTextStyles.header3.fontSize,
+                      ),
                     ),
                   ),
                 ),
@@ -152,10 +148,7 @@ class _LoginPage extends State<LoginPage> {
                 child: Row(
                   children: <Widget>[
                     Expanded(
-                      child: Divider(
-                        color: AppColors.gray,
-                        thickness: 1,
-                      ),
+                      child: Divider(color: AppColors.gray, thickness: 1),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -169,10 +162,7 @@ class _LoginPage extends State<LoginPage> {
                       ),
                     ),
                     Expanded(
-                      child: Divider(
-                        color: AppColors.gray,
-                        thickness: 1,
-                      ),
+                      child: Divider(color: AppColors.gray, thickness: 1),
                     ),
                   ],
                 ),
@@ -186,14 +176,13 @@ class _LoginPage extends State<LoginPage> {
                     //To do
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
       ),
     );
   }
-
 }
 /*
 

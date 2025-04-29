@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'campph-b6b02.firebasestorage.app',
     measurementId: 'G-D3L49XTF84',
   );
+
 }
