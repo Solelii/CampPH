@@ -166,160 +166,166 @@ class CampgroundSheet extends StatefulWidget {
 }
 
 class _CampgroundSheetState extends State<CampgroundSheet> {
+  
   @override
   Widget build(BuildContext context) {
+
+    double availableHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 66;
 
     // DraggableScrollableSheet
     // a sheet is basically a widget that slides from the bottom of the screen
     // + draggable and scrollable, thus the name draggable scrollable sheet
 
-    return DraggableScrollableSheet(
-      initialChildSize: 0.3,
-      minChildSize: 0.0,
-      maxChildSize: 1.0,
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: AppColors.white2,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: ListView(
-            controller: scrollController,
-            padding: EdgeInsets.all(16),
-            children: [
-              // Drag Handle
-              Center(
-                child: Container(
-                  width: 50,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              SizedBox(height: 10),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(widget.name, style: AppTextStyles.header2),
-                  //temp, add functionality to replace icon with .bookmark only when the campsite is saved
-                  Icon(
-                    Icons.bookmark_border,
-                    color: AppColors.black
-                  )
-                ],
-              ),
-
-              SizedBox(height: 10),
-
-              Row(
-                children: 
-                [
-                  Text("${widget.rating}", style: AppTextStyles.subtext1),
-
-                  SizedBox(width: 10),
-
-                  for (int i = 0; i < 5; i++)
-                    if (widget.rating > i)
-                      Icon(
-                        Icons.star, 
-                        color: AppColors.yellow,
-                        size: 16
-                      )
-                    else
-                      Icon(
-                        Icons.star, 
-                        color: AppColors.gray,
-                        size: 16
-                      )
-                    ,
-
-                  SizedBox(width: 10),
-
-                  Text("(${widget.numOfPWRate})", style: AppTextStyles.subtext1)
-
-                ],
-              ),
-
-              SizedBox(height: 10),
-
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 4.5),
-                    child: Container(
-                      color: const Color(0xFFD9D9D9),
-                      child: SizedBox(height: 203, width: 204.5),
+    return SizedBox(
+      height: availableHeight,
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.3,
+        minChildSize: 0.0,
+        maxChildSize: 1.0,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.white2,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: ListView(
+              controller: scrollController,
+              padding: EdgeInsets.all(16),
+              children: [
+                // Drag Handle
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  Column(
-                    children: [
-                      Container(
+                ),
+                SizedBox(height: 10),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(widget.name, style: AppTextStyles.header2),
+                    //temp, add functionality to replace icon with .bookmark only when the campsite is saved
+                    Icon(
+                      Icons.bookmark_border,
+                      color: AppColors.black
+                    )
+                  ],
+                ),
+
+                SizedBox(height: 10),
+
+                Row(
+                  children: 
+                  [
+                    Text("${widget.rating}", style: AppTextStyles.subtext1),
+
+                    SizedBox(width: 10),
+
+                    for (int i = 0; i < 5; i++)
+                      if (widget.rating > i)
+                        Icon(
+                          Icons.star, 
+                          color: AppColors.yellow,
+                          size: 16
+                        )
+                      else
+                        Icon(
+                          Icons.star, 
+                          color: AppColors.gray,
+                          size: 16
+                        )
+                      ,
+
+                    SizedBox(width: 10),
+
+                    Text("(${widget.numOfPWRate})", style: AppTextStyles.subtext1)
+
+                  ],
+                ),
+
+                SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 4.5),
+                      child: Container(
                         color: const Color(0xFFD9D9D9),
-                        child: SizedBox(height: 100, width: 130),
+                        child: SizedBox(height: 203, width: 204.5),
                       ),
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          color: const Color(0xFFD9D9D9),
+                          child: SizedBox(height: 100, width: 130),
+                        ),
 
-                      // A box used for alignment
+                        // A box used for alignment
 
-                      SizedBox(height: 4.5),
-                      
-                      Container(
-                        color: const Color(0xFFD9D9D9),
-                        child: SizedBox(height: 100, width: 130),
-                      )
-                    ],
-                  )
-                ],
-              ),
+                        SizedBox(height: 4.5),
+                        
+                        Container(
+                          color: const Color(0xFFD9D9D9),
+                          child: SizedBox(height: 100, width: 130),
+                        )
+                      ],
+                    )
+                  ],
+                ),
 
-              // Basically a divider ----------------------------------
+                // Basically a divider ----------------------------------
 
-              Divider(),
+                Divider(),
 
-              // Location and Contact
-              _infoTile(Icons.location_on, widget.address),
+                // Location and Contact
+                _infoTile(Icons.location_on, widget.address),
 
-              Divider(),
-              
-              _infoTile(Icons.phone, widget.phoneNumber),
+                Divider(),
+                
+                _infoTile(Icons.phone, widget.phoneNumber),
 
-              Divider(),
+                Divider(),
 
-              _infoTile(Icons.link, widget.socialMediaLink),
+                _infoTile(Icons.link, widget.socialMediaLink),
 
-              Divider(),
+                Divider(),
 
-              // Features / Amenities
-              Text("Features", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              // Wrap(
-              //   spacing: 10,
-              //   runSpacing: 5,
-              //   children: [
-              //     _feature("Fire Pit", widget.firePit),
-              //     _feature("Restroom", widget.restroom),
-              //     _feature("Pets Allowed", widget.petsAllowed),
-              //     _feature("Picnic Table", widget.picnicTable),
-              //     _feature("Signal", widget.signal),
-              //     _feature("Shower", widget.shower),
-              //     _feature("Tap Water", widget.tapWater),
-              //     _feature("First Aid", widget.firstAid),
-              //     _feature("Security", widget.security),
-              //     _feature("Biking Trails", widget.bikingTrails),
-              //     _feature("Hiking Trails", widget.hikingTrails),
-              //     _feature("Store", widget.store),
-              //     _feature("Food Services", widget.foodServices),
-              //     _feature("Lakes/River", widget.lakesOrRiver),
-              //     _feature("Electricity", widget.electricity),
-              //     _feature("WiFi", widget.wifi),
-              //   ],
-              // ),
-            ],
-          ),
-        );
-      },
+                // Features / Amenities
+                Text("Features", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 5),
+                // Wrap(
+                //   spacing: 10,
+                //   runSpacing: 5,
+                //   children: [
+                //     _feature("Fire Pit", widget.firePit),
+                //     _feature("Restroom", widget.restroom),
+                //     _feature("Pets Allowed", widget.petsAllowed),
+                //     _feature("Picnic Table", widget.picnicTable),
+                //     _feature("Signal", widget.signal),
+                //     _feature("Shower", widget.shower),
+                //     _feature("Tap Water", widget.tapWater),
+                //     _feature("First Aid", widget.firstAid),
+                //     _feature("Security", widget.security),
+                //     _feature("Biking Trails", widget.bikingTrails),
+                //     _feature("Hiking Trails", widget.hikingTrails),
+                //     _feature("Store", widget.store),
+                //     _feature("Food Services", widget.foodServices),
+                //     _feature("Lakes/River", widget.lakesOrRiver),
+                //     _feature("Electricity", widget.electricity),
+                //     _feature("WiFi", widget.wifi),
+                //   ],
+                // ),
+              ],
+            ),
+          );
+        },
+      )
     );
   }
 

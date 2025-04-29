@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "206938205714",
+    "project_id": "campph-b6b02",
+    "storage_bucket": "campph-b6b02.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206938205714:android:19eff1d2d4027e72d2b2cb",
+        "android_client_info": {
+          "package_name": "com.example.camph"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSHreY2OcsWEj7wb_774-t45WcODoMbws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

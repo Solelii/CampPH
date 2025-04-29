@@ -1,12 +1,15 @@
 import 'package:campph/screens/explore_screen.dart';
 import 'package:campph/screens/profile_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'screens/login_page.dart';
 import 'screens/signup_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 
-void main() {
+
+void main() async{
 
 //Ensures that all widgets are initialized before proceeding
 
@@ -15,6 +18,10 @@ void main() {
 // Splash screen starts here
 
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(const MyApp());
 

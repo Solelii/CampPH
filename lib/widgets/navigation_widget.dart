@@ -1,6 +1,7 @@
 import 'package:campph/screens/explore_screen.dart';
 import 'package:campph/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:campph/themes/app_colors.dart';
 
 class NavigationWidget extends StatefulWidget {
   const NavigationWidget({super.key});
@@ -17,7 +18,7 @@ class _NavigationWidget extends State<NavigationWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[index],
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           labelTextStyle: WidgetStateProperty.all(
