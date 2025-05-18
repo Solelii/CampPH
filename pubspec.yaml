@@ -40,8 +40,13 @@ dependencies:
   geolocator: ^10.0.0
   google_fonts: ^6.1.0
   flutter_signin_button: ^2.0.0
-  firebase_core: ^3.13.0
-  firebase_auth: ^5.5.3
+  another_flushbar: ^1.10.29
+
+  firebase_core: ^3.13.0        # upgrade from 2.30.0
+  firebase_auth: ^5.5.3         # upgrade from 4.16.0
+  cloud_firestore: ^5.6.7       # upgrade from 4.8.5
+  # optionally add firebase_auth_web for web if you use flutter web explicitly:
+  firebase_auth_web: ^5.14.2   
 
 # Run commands to generate splash screen
 # flutter clean

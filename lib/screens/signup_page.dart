@@ -126,10 +126,12 @@ class _SignupPageState extends State<SignupPage> {
                     controller: _confirmPasswordController,
                     obscureText: true,
                     validator: (value) {
-                      if (value == null || value.isEmpty)
+                      if (value == null || value.isEmpty) {
                         return 'Confirm your password.';
-                      if (value != _passwordController.text)
+                      }
+                      if (value != _passwordController.text) {
                         return 'Passwords do not match.';
+                      }
                       return null;
                     },
                     decoration: InputDecoration(
