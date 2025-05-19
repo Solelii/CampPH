@@ -28,7 +28,47 @@ class _ExploreScreenState extends State<ExploreScreen> {
   void initState() {
     super.initState();
     _currentZoom = 7.0;
-    _selectedLocation = _initialCenter; // Initialize selected location
+    _selectedLocation = _initialCenter;
+    _listenToCamps();
+  }
+
+  void _listenToCamps() {
+    _campService.getAllCamps().listen((camps) {
+      setState(() {
+        _camps = camps;
+      });
+    });
+  }
+
+  // Helper method to determine if a camp has water features
+  bool _hasWaterFeature(List<dynamic> features) {
+    return features.any((feature) => 
+      ['River', 'Beach', 'Lake'].contains(feature)
+    );
+  }
+
+  // Helper method to get the appropriate marker image based on camp type and features
+  String _getMarkerImage(Map<String, dynamic> camp) {
+    final isPublic = camp['CampType'] == 'Public';
+    final features = List<String>.from(camp['CampFeatures'] ?? []);
+    
+    // Priority 1: Glamping (highest priority, always shows glamping icon regardless of other features)
+    if (features.contains('Glamping')) {
+      return 'assets/images/markers/glamping.png';
+    }
+    
+    // Priority 2: Water features (River, Beach, Lake)
+    if (_hasWaterFeature(features)) {
+      return isPublic ? 'assets/images/markers/water_public.png' : 'assets/images/markers/water_private.png';
+    }
+    
+    // Priority 3: Woods
+    if (features.contains('Woods')) {
+      return isPublic ? 'assets/images/markers/woods_public.png' : 'assets/images/markers/woods_private.png';
+    }
+    
+    // Default: If it has Mountain or any other features, use woods markers as default
+    return isPublic ? 'assets/images/markers/woods_public.png' : 'assets/images/markers/woods_private.png';
   }
 
   Future<void> _showCampFormBottomSheet() async {
@@ -113,6 +153,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     });
   }
 
+
   void _startAddingCamp() {
     if (!mounted) return;
     setState(() {
@@ -149,40 +190,65 @@ class _ExploreScreenState extends State<ExploreScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        FlutterMap(
-          options: MapOptions(
-            initialCenter: _initialCenter,
-            initialZoom: _currentZoom,
-            onPositionChanged: (MapPosition position, bool hasGesture) {
-              setState(() {
-                _currentZoom = position.zoom ?? _currentZoom;
-                if (_isAddingCamp) {
-                  _selectedLocation = position.center;
-                }
-              });
-            },
-            onTap: (_, __) {
-              if (_isSheetOpen) {
-                setState(() => _isSheetOpen = false);
-              }
-            },
-          ),
-          children: [
-            TileLayer(
-              urlTemplate:
-                  "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c'],
+        GestureDetector(
+          onTap: () {
+            if (_isSheetOpen) {
+              _bottomSheetController?.close();
+              _bottomSheetController = null;
+              setState(() => _isSheetOpen = false);
+            }
+          },
+          child: FlutterMap(
+            options: MapOptions(
+              initialCenter: _initialCenter,
+              initialZoom: _currentZoom,
+              onPositionChanged: (MapPosition position, bool hasGesture) {
+                setState(() {
+                  _currentZoom = position.zoom ?? _currentZoom;
+                  if (_isAddingCamp) {
+                    _selectedLocation = position.center;
+                  }
+                });
+              },
             ),
-            // Your markers here...
-          ],
-        ),
-
-        if (_isAddingCamp)
-          Center(
-            child: Icon(Icons.location_pin, size: 50, color: Colors.redAccent),
+            children: [
+              TileLayer(
+                urlTemplate: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c'],
+              ),
+              MarkerLayer(
+                markers: [
+                  // Show existing camps
+                  ..._camps.map((camp) => Marker(
+                        point: camp['location'] as LatLng,
+                        width: 40,
+                        height: 40,
+                        child: GestureDetector(
+                          onTap: () => _showCampDetails(camp),
+                          child: Image.asset(
+                            _getMarkerImage(camp),
+                            width: 40,
+                            height: 40,
+                          ),
+                        ),
+                      )),
+                  // Show marker for new camp location
+                  if (_isAddingCamp && _selectedLocation != null)
+                    Marker(
+                      point: _selectedLocation!,
+                      width: 40,
+                      height: 40,
+                      child: const Icon(
+                        Icons.location_pin,
+                        size: 40,
+                        color: Colors.green,
+                      ),
+                    ),
+                ],
+              ),
+            ],
           ),
-
-        // Your other UI components (SearchBar, sheets) ...
+        ),
         Positioned(
           bottom: 20,
           right: 20,

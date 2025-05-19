@@ -164,277 +164,156 @@ class CampgroundSheet extends StatefulWidget {
   State<CampgroundSheet> createState() => _CampgroundSheetState();
 }
 
-class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-  bool _isExpanded = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  Widget _buildImageGrid() {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Container(
-            height: 200,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                bottomLeft: Radius.circular(12),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 2),
-        Expanded(
-          child: Column(
-            children: [
-              Container(
-                height: 99,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(12),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 2),
-              Container(
-                height: 99,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(12),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAmenityItem(IconData icon, String label, bool isAvailable) {
-    return Opacity(
-      opacity: isAvailable ? 1.0 : 0.5,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 24),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: AppTextStyles.body2,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAmenitiesGrid() {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 16,
-      children: [
-        _buildAmenityItem(Icons.outdoor_grill, 'Grill', widget.outdoorGrill),
-        _buildAmenityItem(Icons.local_fire_department, 'Fire Pit', widget.firePitOrBonfire),
-        _buildAmenityItem(Icons.cabin, 'Tent Rental', widget.tentRental),
-        _buildAmenityItem(Icons.beach_access, 'Hammock', widget.hammockRental),
-        _buildAmenityItem(Icons.shower, 'Shower', widget.soap),
-        _buildAmenityItem(Icons.power, 'Power', widget.powerSource),
-        _buildAmenityItem(Icons.water_drop, 'Water', widget.drinkingOrWashingWater),
-        _buildAmenityItem(Icons.pets, 'Pets Allowed', widget.petsAllowed),
-        _buildAmenityItem(Icons.local_drink, 'Drinks', widget.drinksAllowed),
-        _buildAmenityItem(Icons.medical_services, 'First Aid', widget.firstAidKit),
-        _buildAmenityItem(Icons.security, 'Security', widget.securityCameras),
-        _buildAmenityItem(Icons.accessible, 'PWD Friendly', widget.pwdFriendly),
-      ],
-    );
-  }
-
+class _CampgroundSheetState extends State<CampgroundSheet> {
+  
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.25,
-      minChildSize: 0.15,
-      maxChildSize: 0.95,
-      snap: true,
-      snapSizes: const [0.25, 0.5, 0.95],
-      builder: (context, scrollController) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, -2),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Draggable header area
-              GestureDetector(
-                onVerticalDragUpdate: (details) {
-                  if (scrollController.position.pixels <= 0) {
-                    scrollController.jumpTo(0);
-                    scrollController.position.moveTo(
-                      scrollController.position.pixels - details.delta.dy,
-                    );
-                  }
-                },
-                onVerticalDragEnd: (details) {
-                  if (scrollController.position.pixels <= 0 && 
-                      details.primaryVelocity! > 300) {
-                    widget.closeSheet();
-                  }
-                },
-                child: Container(
-                  color: Colors.transparent,
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    children: [
-                      // Drag handle
-                      Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(2),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          children: [
-                            // Title and bookmark
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    widget.name,
-                                    style: AppTextStyles.header2,
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: const Icon(Icons.bookmark_border),
-                                  onPressed: () {},
-                                ),
-                              ],
-                            ),
-                            // Rating
-                            Row(
-                              children: [
-                                Text(
-                                  widget.rating.toString(),
-                                  style: AppTextStyles.subtext1,
-                                ),
-                                const SizedBox(width: 8),
-                                Row(
-                                  children: List.generate(
-                                    5,
-                                    (index) => Icon(
-                                      Icons.star,
-                                      size: 16,
-                                      color: index < widget.rating
-                                          ? AppColors.yellow
-                                          : AppColors.gray,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "(${widget.numOfPWRate})",
-                                  style: AppTextStyles.subtext1,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    return GestureDetector(
+      onVerticalDragEnd: (details) {
+        if (details.primaryVelocity! > 500) {
+          // If dragged down fast enough, close the sheet
+          widget.closeSheet();
+        }
+      },
+      child: DraggableScrollableSheet(
+        initialChildSize: 0.25,
+        minChildSize: 0.15,
+        maxChildSize: 0.95,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.white2,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: ListView(
+              controller: scrollController,
+              padding: EdgeInsets.all(16),
+              children: [
+                // Drag Handle
+                Center(
+                  child: Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                 ),
-              ),
-              // Scrollable content
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                SizedBox(height: 10),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const SizedBox(height: 16),
-                    // Quick actions
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildQuickAction(Icons.directions, 'Directions'),
-                        _buildQuickAction(Icons.save, 'Save'),
-                        _buildQuickAction(Icons.share, 'Share'),
-                        _buildQuickAction(Icons.photo_camera, 'Add photo'),
-                      ],
-                    ),
-                    const Divider(height: 32),
-
-                    // Images
-                    _buildImageGrid(),
-                    const SizedBox(height: 24),
-
-                    // Location and contact info
-                    _buildInfoTile(Icons.location_on, widget.address),
-                    if (widget.phoneNumber.isNotEmpty)
-                      _buildInfoTile(Icons.phone, widget.phoneNumber),
-                    if (widget.socialMediaLink.isNotEmpty)
-                      _buildInfoTile(Icons.link, widget.socialMediaLink),
-                    const Divider(height: 32),
-
-                    // Description
-                    Text('About', style: AppTextStyles.header2),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.description,
-                      style: AppTextStyles.body1,
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Natural features
-                    Text('Natural Features', style: AppTextStyles.header2),
-                    const SizedBox(height: 8),
-                    Text(
-                      widget.naturalFeature,
-                      style: AppTextStyles.body1,
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Amenities
-                    Text('Amenities', style: AppTextStyles.header2),
-                    const SizedBox(height: 16),
-                    _buildAmenitiesGrid(),
-                    const SizedBox(height: 32),
+                    Text(widget.name, style: AppTextStyles.header2),
+                    //temp, add functionality to replace icon with .bookmark only when the campsite is saved
+                    Icon(
+                      Icons.bookmark_border,
+                      color: AppColors.black
+                    )
                   ],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+
+                SizedBox(height: 10),
+
+                Row(
+                  children: 
+                  [
+                    Text("${widget.rating}", style: AppTextStyles.subtext1),
+
+                    SizedBox(width: 10),
+
+                    for (int i = 0; i < 5; i++)
+                      if (widget.rating > i)
+                        Icon(
+                          Icons.star, 
+                          color: AppColors.yellow,
+                          size: 16
+                        )
+                      else
+                        Icon(
+                          Icons.star, 
+                          color: AppColors.gray,
+                          size: 16
+                        )
+                      ,
+
+                    SizedBox(width: 10),
+
+                    Text("(${widget.numOfPWRate})", style: AppTextStyles.subtext1)
+
+                  ],
+                ),
+
+                SizedBox(height: 10),
+
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 4.5),
+                      child: Container(
+                        color: const Color(0xFFD9D9D9),
+                        child: SizedBox(height: 203, width: 204.5),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        Container(
+                          color: const Color(0xFFD9D9D9),
+                          child: SizedBox(height: 100, width: 130),
+                        ),
+
+                        // A box used for alignment
+
+                        SizedBox(height: 4.5),
+                        
+                        Container(
+                          color: const Color(0xFFD9D9D9),
+                          child: SizedBox(height: 100, width: 130),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+
+                // Basically a divider ----------------------------------
+
+                Divider(),
+
+                // Location and Contact
+
+                Divider(),
+
+                // Features / Amenities
+                Text("Features", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 5),
+                // Wrap(
+                //   spacing: 10,
+                //   runSpacing: 5,
+                //   children: [
+                //     _feature("Fire Pit", widget.firePit),
+                //     _feature("Restroom", widget.restroom),
+                //     _feature("Pets Allowed", widget.petsAllowed),
+                //     _feature("Picnic Table", widget.picnicTable),
+                //     _feature("Signal", widget.signal),
+                //     _feature("Shower", widget.shower),
+                //     _feature("Tap Water", widget.tapWater),
+                //     _feature("First Aid", widget.firstAid),
+                //     _feature("Security", widget.security),
+                //     _feature("Biking Trails", widget.bikingTrails),
+                //     _feature("Hiking Trails", widget.hikingTrails),
+                //     _feature("Store", widget.store),
+                //     _feature("Food Services", widget.foodServices),
+                //     _feature("Lakes/River", widget.lakesOrRiver),
+                //     _feature("Electricity", widget.electricity),
+                //     _feature("WiFi", widget.wifi),
+                //   ],
+                // ),
+              ],
+            ),
+          );
+        },
+      )
     );
   }
 
