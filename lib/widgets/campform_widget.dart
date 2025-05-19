@@ -35,6 +35,9 @@ class _CampFormWidgetState extends State<CampFormWidget> {
 
   late LatLng? _selectedLocation;
 
+  // List of features (excluding Public/Private)
+  final List<String> _features = ['River', 'Beach', 'Lake', 'Mountain', 'Woods', 'Glamping'];
+
   @override
   void initState() {
     super.initState();
@@ -43,15 +46,64 @@ class _CampFormWidgetState extends State<CampFormWidget> {
 
   void _toggleTag(String tag) {
     setState(() {
-      if (tag == 'Public') _selectedTags.remove('Private');
-      if (tag == 'Private') _selectedTags.remove('Public');
+      // Handle Glamping special case
+      if (tag == 'Glamping') {
+        if (!_selectedTags.contains(tag)) {
+          // When selecting Glamping
+          _selectedTags.remove('Public');  // Remove Public if selected
+          _selectedTags.add('Private');    // Force Private
+          _selectedTags.add(tag);          // Add Glamping
+        } else {
+          // When unselecting Glamping
+          _selectedTags.remove(tag);
+        }
+        return;
+      }
 
+      // Handle Public/Private toggle
+      if (tag == 'Public' || tag == 'Private') {
+        if (tag == 'Public' && _selectedTags.contains('Glamping')) {
+          // If selecting Public and Glamping is selected, remove Glamping
+          _selectedTags.remove('Glamping');
+        }
+        
+        // Remove the opposite type
+        if (tag == 'Public') _selectedTags.remove('Private');
+        if (tag == 'Private') _selectedTags.remove('Public');
+
+        // Toggle the selected type
+        if (_selectedTags.contains(tag)) {
+          _selectedTags.remove(tag);
+          // If removing Private and Glamping is selected, remove Glamping too
+          if (tag == 'Private' && _selectedTags.contains('Glamping')) {
+            _selectedTags.remove('Glamping');
+          }
+        } else {
+          _selectedTags.add(tag);
+        }
+        return;
+      }
+
+      // Handle other feature tags
       if (_selectedTags.contains(tag)) {
         _selectedTags.remove(tag);
       } else {
         _selectedTags.add(tag);
       }
     });
+  }
+
+  // Helper method to check if at least one feature is selected
+  bool _hasFeatureSelected() {
+    return _features.any((feature) => _selectedTags.contains(feature));
+  }
+
+  // Helper method to check if Glamping is properly configured
+  bool _isGlampingValid() {
+    if (_selectedTags.contains('Glamping')) {
+      return _selectedTags.contains('Private');
+    }
+    return true;
   }
 
   Widget _buildTagButton(String tag) {
@@ -203,6 +255,20 @@ class _CampFormWidgetState extends State<CampFormWidget> {
                               !_selectedTags.contains('Private')) {
                             _showErrorFlushbar(
                               'Please select either "Public" or "Private" as Camp Type.',
+                            );
+                            return;
+                          }
+
+                          if (!_hasFeatureSelected()) {
+                            _showErrorFlushbar(
+                              'Please select at least one feature (River, Beach, Lake, Mountain, Woods, or Glamping).',
+                            );
+                            return;
+                          }
+
+                          if (!_isGlampingValid()) {
+                            _showErrorFlushbar(
+                              'Glamping sites must be set as Private.',
                             );
                             return;
                           }

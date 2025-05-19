@@ -40,6 +40,25 @@ class Camp {
 class CampFirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  // Stream to get all camps in real-time
+  Stream<List<Map<String, dynamic>>> getAllCamps() {
+    return _firestore
+        .collection('camps')
+        .orderBy('DateCreated', descending: true)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.map((doc) {
+        final data = doc.data();
+        final GeoPoint geoPoint = data['location'] as GeoPoint;
+        return {
+          'id': doc.id,
+          ...data,
+          'location': LatLng(geoPoint.latitude, geoPoint.longitude),
+        };
+      }).toList();
+    });
+  }
+
   Future<void> saveCampData({
     required LatLng location,
     required String name,
