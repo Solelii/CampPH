@@ -3,6 +3,8 @@ import 'package:campph/themes/app_text_styles.dart';
 import 'package:campph/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:campph/services/user_service.dart'; // New import
+import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -15,6 +17,7 @@ class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
@@ -60,6 +63,32 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
 
+                // Username field
+                SizedBox(
+                  width: fieldWidth,
+                  child: TextFormField(
+                    controller: _usernameController,
+                    validator:
+                        (value) =>
+                            (value == null || value.isEmpty)
+                                ? 'Username is required.'
+                                : null,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppColors.white2,
+                      border: const OutlineInputBorder(),
+                      labelText: 'Username',
+                      floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      labelStyle: TextStyle(
+                        color: AppColors.gray,
+                        fontSize: AppTextStyles.body1.fontSize,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+
+                // Email field
                 SizedBox(
                   width: fieldWidth,
                   child: TextFormField(
@@ -84,6 +113,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 const SizedBox(height: 30),
 
+                // Password field
                 SizedBox(
                   width: fieldWidth,
                   child: TextFormField(
@@ -106,9 +136,9 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       suffixIcon: IconButton(
                         onPressed:
-                            () => setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            ),
+                            () => setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            }),
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility
@@ -120,6 +150,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 const SizedBox(height: 30),
 
+                // Confirm Password field
                 SizedBox(
                   width: fieldWidth,
                   child: TextFormField(
@@ -149,6 +180,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 const SizedBox(height: 30),
 
+                // Sign Up button
                 SizedBox(
                   width: fieldWidth,
                   height: 50,
@@ -171,6 +203,30 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                 ),
+
+                // Redirect to Login
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Already have an account? Login",
+                      style: TextStyle(
+                        color: AppColors.darkGreen,
+                        fontSize: AppTextStyles.body2.fontSize,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -182,9 +238,15 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
       try {
-        await _auth.createUserWithEmailAndPassword(
+        final credential = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
+        );
+
+        await UserFirestoreService().saveUserData(
+          uid: credential.user!.uid,
+          email: _emailController.text.trim(),
+          username: _usernameController.text.trim(),
         );
 
         Navigator.pushReplacement(

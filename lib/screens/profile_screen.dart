@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:campph/services/camp_service.dart';
+import 'package:campph/services/user_service.dart'; // NEW: import user service
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -11,43 +14,100 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isPublic = true;
 
   Map<String, bool> selectableButtons = {
-    "River": false,
-    "Beach": false,
-    "Mountain": false,
+    'River': false,
+    'Beach': false,
+    'Lake': false,
+    'Mountain': false,
+    'Woods': false,
+    'Glamping': false,
   };
+
+  List<Camp> camps = [];
+  bool isLoading = true;
+  String? username; // NEW: to store the username
+
+  final CampFirestoreService campService = CampFirestoreService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+    _loadCamps();
+  }
+
+  Future<void> _loadUserData() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final fetchedUsername = await UserFirestoreService().getUsername(
+        currentUser.uid,
+      );
+      if (!mounted) return;
+      setState(() {
+        username = fetchedUsername ?? 'User';
+      });
+    }
+  }
+
+  Future<void> _loadCamps() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    final fetchedCamps = await campService.getCampsOwnedOrBookmarked(
+      currentUser.uid,
+    );
+
+    if (!mounted) return;
+    setState(() {
+      camps = fetchedCamps;
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: Text("Profile"),
-        leading: IconButton(onPressed: () => {}, icon: Icon(Icons.arrow_back)),
-        actions: [IconButton(onPressed: () => {}, icon: Icon(Icons.more_vert))],
+        title: const Text("Profile"),
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back),
+        ),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Picture and Name
+            // Profile Picture and Username
             Row(
               children: [
                 CircleAvatar(
                   radius: 40,
                   backgroundColor: Colors.green[300],
                   child: Text(
-                    "K",
-                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    username != null && username!.isNotEmpty
+                        ? username![0].toUpperCase()
+                        : '',
+                    style: const TextStyle(fontSize: 24, color: Colors.white),
                   ),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Khurt Dilanco",
-                      style: TextStyle(
+                      username ?? 'Loading...',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -56,166 +116,74 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-            // Album Section
-            Text(
-              "Album",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
+            // Camps List (Filtered by isPublic and selected tags)
+            Expanded(
+              child:
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : camps.isEmpty
+                      ? const Center(child: Text('No camps found.'))
+                      : ListView.builder(
+                        itemCount: camps.length,
+                        itemBuilder: (context, index) {
+                          final camp = camps[index];
 
-            // Image Layout
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 122,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        height: 122,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[300],
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
+                          // Filter by Public/Private toggle
+                          if (isPublic && camp.campType != 'Public') {
+                            return Container();
+                          }
+                          if (!isPublic && camp.campType != 'Private') {
+                            return Container();
+                          }
 
-            // View All Button
-            Align(
-              alignment: Alignment.center,
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.green[700]),
-                ),
-              ),
-            ),
+                          // Filter by selected tags, if any selected
+                          final selectedTags =
+                              selectableButtons.entries
+                                  .where((entry) => entry.value)
+                                  .map((entry) => entry.key)
+                                  .toSet();
 
-            // My Campgrounds Section
-            SizedBox(height: 10),
-            Text(
-              "My Campgrounds",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
+                          if (selectedTags.isNotEmpty &&
+                              !camp.features.any(
+                                (feature) => selectedTags.contains(feature),
+                              )) {
+                            return Container();
+                          }
 
-            // Toggle button for Public / Private
-            Row(
-              children: [
-                // Public Button
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isPublic = true;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isPublic ? Color(0xFF3B862D) : Colors.grey[300],
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      "Public",
-                      style: TextStyle(
-                        color: isPublic ? Colors.white : Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-
-                // Private Button
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      isPublic = false;
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: isPublic ? Colors.grey[300] : Color(0xFFEFAD42),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      "Private",
-                      style: TextStyle(
-                        color: isPublic ? Colors.black : Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 15),
-
-                // Divider
-                Container(width: 1.5, height: 30, color: Colors.grey[700]),
-
-                SizedBox(width: 10),
-
-                ...selectableButtons.keys.map((tag) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      right: 10,
-                    ), // Spacing after each tag button
-                    child: SizedBox(
-                      width: 80, // Fixed width for all tag buttons
-                      child: GestureDetector(
-                        onTap:
-                            () => setState(
-                              () =>
-                                  selectableButtons[tag] =
-                                      !selectableButtons[tag]!,
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 6),
+                            child: ListTile(
+                              title: Text(camp.name),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(camp.description),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Type: ${camp.campType}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Features: ${camp.features.join(', ')}',
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              trailing:
+                                  camp.bookmarked
+                                      ? const Icon(
+                                        Icons.bookmark,
+                                        color: Colors.green,
+                                      )
+                                      : null,
                             ),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          decoration: BoxDecoration(
-                            color:
-                                selectableButtons[tag]!
-                                    ? Color(0xFF3B862D)
-                                    : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            tag,
-                            style: TextStyle(
-                              color:
-                                  selectableButtons[tag]!
-                                      ? Colors.white
-                                      : Colors.black,
-                            ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                }),
-              ],
             ),
           ],
         ),

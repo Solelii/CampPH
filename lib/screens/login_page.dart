@@ -3,7 +3,7 @@ import 'package:campph/themes/app_text_styles.dart';
 import 'package:campph/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -152,36 +152,28 @@ class _LoginPage extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: fieldWidth,
-                  child: Row(
-                    children: <Widget>[
-                      const Expanded(child: Divider(thickness: 1)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          "OR",
-                          style: TextStyle(
-                            color: AppColors.gray,
-                            fontSize: AppTextStyles.body2.fontSize,
-                            fontWeight: FontWeight.bold,
-                          ),
+
+                // Sign-up redirect
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const SignupPage(),
                         ),
-                      ),
-                      const Expanded(child: Divider(thickness: 1)),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 50,
-                  width: fieldWidth,
-                  child: SignInButton(
-                    Buttons.Google,
-                    onPressed: () {
-                      // TODO: Add Google sign-in implementation
+                      );
                     },
+                    child: Text(
+                      "Don't have an account? Sign up",
+                      style: TextStyle(
+                        color: AppColors.darkGreen,
+                        fontSize: AppTextStyles.body2.fontSize,
+                        fontWeight: FontWeight.w500,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
                   ),
                 ),
               ],

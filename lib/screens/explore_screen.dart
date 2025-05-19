@@ -1,25 +1,3 @@
-/* Authored by: Khurt Dilanco
-  Company: Blue Team
-  Project: Project CampH
-  Feature: [CMPH-002] Explore Screen
-  Description: 
-
-  This is the first screen that the user will see. Immediately, the user will be able to view the nearest campsite.
-
-  Objectives:
-
-    Integrate Google Maps in Flutter (Using google_maps_flutter package)
-
-    Add Search Bar at the top (TextField or AppBar)
-
-    Add Current Location Button (Use geolocator for location access)
-
-    Implement Floating Action Button (FAB) for adding places/reviews
-
-    Decide whether to keep or remove Search Area Feature
-
- */
-
 import 'package:campph/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -39,19 +17,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
   late double _currentZoom;
   LatLng? _selectedLocation;
 
-  // The initial center of the map
   final LatLng _initialCenter = LatLng(13.41, 122.56);
 
   @override
   void initState() {
     super.initState();
     _currentZoom = 7.0;
-    _selectedLocation = _initialCenter; // Initialize selected location
+    _selectedLocation = _initialCenter;
   }
 
-  void _showCampFormBottomSheet() {
-    if (_selectedLocation == null) return;
-    showModalBottomSheet(
+  Future<void> _showCampFormBottomSheet() async {
+    if (_selectedLocation == null || !mounted) return;
+
+    // Open the bottom sheet and wait until it's closed
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -59,17 +38,23 @@ class _ExploreScreenState extends State<ExploreScreen> {
       ),
       builder: (context) => CampFormWidget(initialLocation: _selectedLocation),
     );
+
+    // Optional: when sheet is dismissed, ensure widget is still mounted
+    if (mounted) {
+      setState(() => _isSheetOpen = false);
+    }
   }
 
   void _startAddingCamp() {
+    if (!mounted) return;
     setState(() {
       _isAddingCamp = true;
-      _selectedLocation =
-          _initialCenter; // or current center from map controller if available
+      _selectedLocation = _initialCenter;
     });
   }
 
   void _cancelAddingCamp() {
+    if (!mounted) return;
     setState(() {
       _isAddingCamp = false;
       _selectedLocation = null;
@@ -79,10 +64,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
   void _saveCamp() {
     if (_selectedLocation != null) {
       _showCampFormBottomSheet();
+      if (!mounted) return;
       setState(() {
         _isAddingCamp = false;
+        _isSheetOpen = true;
       });
     } else {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select a location on the map")),
       );
@@ -98,6 +86,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
             initialCenter: _initialCenter,
             initialZoom: _currentZoom,
             onPositionChanged: (MapPosition position, bool hasGesture) {
+              if (!mounted) return;
               setState(() {
                 _currentZoom = position.zoom ?? _currentZoom;
                 if (_isAddingCamp) {
@@ -106,7 +95,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               });
             },
             onTap: (_, __) {
-              if (_isSheetOpen) {
+              if (_isSheetOpen && mounted) {
                 setState(() => _isSheetOpen = false);
               }
             },
@@ -117,7 +106,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
               subdomains: ['a', 'b', 'c'],
             ),
-            // Your markers here...
           ],
         ),
 
@@ -126,7 +114,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
             child: Icon(Icons.location_pin, size: 50, color: Colors.redAccent),
           ),
 
-        // Your other UI components (SearchBar, sheets) ...
         Positioned(
           bottom: 20,
           right: 20,
@@ -160,80 +147,3 @@ class _ExploreScreenState extends State<ExploreScreen> {
     );
   }
 }
-
-/*
-  CampgroundSheet(
-    name: "Camp Kawayan",
-    isPublic: true,
-    rating: 4.5,
-    numOfPWRate: 10,
-    address: "123 Tondo, Manila",
-    socialMediaLink: "facebook.com/campkawayan",
-    phoneNumber: "+63 912 345 6789", 
-    description: '''
-      Nestled at the base of Mt. Kalinawan, Luntian Campgrounds offers a serene escape from the bustle of city life. Wake up to a sea of clouds and fall asleep under a blanket of stars.
-
-      Each campsite includes a fire pit, shared toilet and shower facilities, and access to scenic hiking trails.
-
-      For sleeping, guests may choose between primitive tent camping or our cozy furnished bell tents with queen-sized beds and solar-powered lights.
-
-      Ideal for couples, solo adventurers, and weekend warriors looking for a mix of raw nature and light comfort.
-
-      Nearby attractions include Kalinawan Falls, Bato Viewing Deck, and the Bayan Farmers Market (15 mins drive).
-  ''', 
-    naturalFeature: 'MountainRiverWoods', 
-    imageUrls: ['a'], 
-    isGlampingSite: false, 
-    typeOfShelter: ['BellTent'], 
-    listOfUnitsAndAmenities: [
-      Units(
-        groundSleeping: true
-      )
-      ..guests = 2
-      ..pillows = 2
-      ..blanket = 1
-      ..restroom = 0
-    ],
-    
-    outdoorGrill: true,
-    firePitOrBonfire: true,
-    tentRental: true,
-    hammockRental: true,
-
-    soap: false,
-    hairDryer: false,
-    bathrobeOrTowel: false,
-    bidet: false,
-
-    privateAccess: false,
-    emergencyCallSystem: false,
-    guardsAvailable: false,
-    firstAidKit: false,
-    securityCameras: false,
-    pwdFriendly: false,
-
-    powerSource: false,
-    electricFan: false,
-    airConditioning: false,
-    drinkingOrWashingWater: false,
-
-    drinksAllowed: false,
-    petsAllowed: false,
-
-    rules: [
-      "1. Respect quiet hours from 10:00 PM to 6:00 AM.",
-      "2. Campfires are allowed only in designated fire pits. Please put them out completely before leaving.",
-      "3. Keep the campsite clean — use trash bins or pack out all waste.",
-      "4. Pets are welcome but must be leashed at all times.",
-      "5. Do not disturb local wildlife or remove plants from the area.",
-      "6. Alcohol is permitted, but please drink responsibly and avoid excessive noise.",
-      "7. Use shared facilities responsibly and leave them clean for the next camper.",
-      "8. Park only in designated parking areas to avoid damaging natural vegetation.",
-      "9. Unauthorized loud music or parties are not allowed.",
-      "10. Follow instructions from campsite staff at all times."
-    ],
-    visibility: true,
-    // ignore: void_checks
-    closeSheet: false,
-  )
-*/
