@@ -4,6 +4,7 @@ class AppColors {
   static const green = Color(0XFF00BC4E); 
   static const darkGreen = Color(0xFF3B862D);
   static const veryDarkGreen = Color(0xFF2C4327);
+  static const lightGreen = Color(0xFFE8F5E9); // Light green for feature chips
   static const gold = Color(0xFFD48403);
   static const yellow = Color(0xFFEFAD42);
   static const black = Color(0xFF292929); // For text
