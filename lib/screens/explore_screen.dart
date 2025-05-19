@@ -39,7 +39,6 @@ class _ExploreScreenState extends State<ExploreScreen> {
       builder: (context) => CampFormWidget(initialLocation: _selectedLocation),
     );
 
-    // Optional: when sheet is dismissed, ensure widget is still mounted
     if (mounted) {
       setState(() => _isSheetOpen = false);
     }

@@ -9,6 +9,7 @@ class Camp {
   final List<String> features;
   final GeoPoint location;
   final bool bookmarked;
+  final String ownerUsername; // <-- Added this
 
   Camp({
     required this.id,
@@ -18,6 +19,7 @@ class Camp {
     required this.features,
     required this.location,
     required this.bookmarked,
+    required this.ownerUsername, // <-- Added this
   });
 
   factory Camp.fromDoc(DocumentSnapshot doc) {
@@ -30,6 +32,7 @@ class Camp {
       features: List<String>.from(data['CampFeatures'] ?? []),
       location: data['location'],
       bookmarked: data['bookmarked'] ?? false,
+      ownerUsername: data['ownerUsername'] ?? 'Unknown', // <-- Added this
     );
   }
 }
@@ -42,7 +45,8 @@ class CampFirestoreService {
     required String name,
     required String description,
     required Set<String> tags,
-    required String ownerId, // <-- Add this
+    required String ownerId,
+    required String ownerUsername,
   }) async {
     final DateTime now = DateTime.now();
 
@@ -64,8 +68,9 @@ class CampFirestoreService {
         'CampFeatures': features,
         'CampName': name,
         'CampDescription': description,
-        'ownerId': ownerId, // <-- Save owner ID
-        'bookmarked': false, // default value on save
+        'ownerId': ownerId,
+        'ownerUsername': ownerUsername,
+        'bookmarked': false,
       });
     } catch (e) {
       print('Error saving camp data: $e');
@@ -75,21 +80,18 @@ class CampFirestoreService {
 
   Future<List<Camp>> getCampsOwnedOrBookmarked(String currentUserId) async {
     try {
-      // Query camps where ownerId == currentUserId
       final ownerQuery =
           await _firestore
               .collection('camps')
               .where('ownerId', isEqualTo: currentUserId)
               .get();
 
-      // Query camps where bookmarked == true
       final bookmarkedQuery =
           await _firestore
               .collection('camps')
               .where('bookmarked', isEqualTo: true)
               .get();
 
-      // Combine results uniquely (avoid duplicates)
       final allDocs = {...ownerQuery.docs, ...bookmarkedQuery.docs};
 
       return allDocs.map((doc) => Camp.fromDoc(doc)).toList();

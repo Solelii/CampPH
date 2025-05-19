@@ -3,7 +3,7 @@ import 'package:campph/themes/app_text_styles.dart';
 import 'package:campph/widgets/navigation_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:campph/services/user_service.dart'; // New import
+import 'package:campph/services/user_service.dart';
 import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {

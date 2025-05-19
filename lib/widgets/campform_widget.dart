@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:campph/services/camp_service.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:campph/services/user_service.dart';
 
 class CampFormWidget extends StatefulWidget {
   final LatLng? initialLocation;
@@ -215,17 +216,29 @@ class _CampFormWidgetState extends State<CampFormWidget> {
                           }
 
                           try {
+                            // Fetch the username
+                            final userService = UserFirestoreService();
+                            final username = await userService.getUsername(
+                              user.uid,
+                            );
+
+                            if (username == null) {
+                              _showErrorFlushbar('Failed to fetch username.');
+                              return;
+                            }
+
+                            // Save camp with username
                             await CampFirestoreService().saveCampData(
                               location: _selectedLocation!,
                               name: _nameController.text.trim(),
                               description: _descriptionController.text.trim(),
                               tags: _selectedTags,
-                              ownerId: user.uid, // <-- Pass ownerId
+                              ownerId: user.uid,
+                              ownerUsername: username,
                             );
 
                             if (mounted) {
                               _showSuccessSnackbar();
-
                               await Future.delayed(
                                 const Duration(milliseconds: 500),
                               );
@@ -236,6 +249,7 @@ class _CampFormWidgetState extends State<CampFormWidget> {
                           }
                         }
                       },
+
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.darkGreen,
                         foregroundColor: Colors.white,

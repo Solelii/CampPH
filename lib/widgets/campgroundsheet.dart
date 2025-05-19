@@ -1,4 +1,3 @@
-
 /* Authored by: Khurt Dilanco
   Company: Blue Team
   Project: Project CampH
@@ -21,14 +20,12 @@
     
  */
 
-
 import 'package:campph/themes/app_colors.dart';
 import 'package:campph/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:campph/data_class/data_class.dart';
 
 class CampgroundSheet extends StatefulWidget {
-
   /*
 
     camping ground info to be fetched
@@ -36,7 +33,7 @@ class CampgroundSheet extends StatefulWidget {
     basta si info ni
 
   */
-  
+
   final void closeSheet;
 
   final String name;
@@ -92,7 +89,6 @@ class CampgroundSheet extends StatefulWidget {
     super.key,
 
     // Campsite general info
-
     required this.name,
     required this.isPublic,
     required this.rating,
@@ -103,27 +99,21 @@ class CampgroundSheet extends StatefulWidget {
     required this.description,
 
     // Natural features nearby
-
     required this.naturalFeature,
 
     // Pictures
-
     required this.imageUrls,
 
     // Campsite or Glampsite
-
     required this.isGlampingSite,
 
     // Types of shelters (bell tent, safari tent, etc.)
-
     required this.typeOfShelter,
 
     // Units and amenities
-
     required this.listOfUnitsAndAmenities,
 
     // Amenities
-
     required this.outdoorGrill,
     required this.firePitOrBonfire,
     required this.tentRental,
@@ -150,15 +140,12 @@ class CampgroundSheet extends StatefulWidget {
     required this.petsAllowed,
 
     // Rules for campers
-    
     required this.rules,
 
     // Visibility
-
     required this.visibility,
 
     required this.closeSheet,
-
   });
 
   @override
@@ -166,11 +153,12 @@ class CampgroundSheet extends StatefulWidget {
 }
 
 class _CampgroundSheetState extends State<CampgroundSheet> {
-  
   @override
   Widget build(BuildContext context) {
-
-    double availableHeight = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 66;
+    double availableHeight =
+        MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        66;
 
     // DraggableScrollableSheet
     // a sheet is basically a widget that slides from the bottom of the screen
@@ -210,41 +198,30 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
                   children: [
                     Text(widget.name, style: AppTextStyles.header2),
                     //temp, add functionality to replace icon with .bookmark only when the campsite is saved
-                    Icon(
-                      Icons.bookmark_border,
-                      color: AppColors.black
-                    )
+                    Icon(Icons.bookmark_border, color: AppColors.black),
                   ],
                 ),
 
                 SizedBox(height: 10),
 
                 Row(
-                  children: 
-                  [
+                  children: [
                     Text("${widget.rating}", style: AppTextStyles.subtext1),
 
                     SizedBox(width: 10),
 
                     for (int i = 0; i < 5; i++)
                       if (widget.rating > i)
-                        Icon(
-                          Icons.star, 
-                          color: AppColors.yellow,
-                          size: 16
-                        )
+                        Icon(Icons.star, color: AppColors.yellow, size: 16)
                       else
-                        Icon(
-                          Icons.star, 
-                          color: AppColors.gray,
-                          size: 16
-                        )
-                      ,
+                        Icon(Icons.star, color: AppColors.gray, size: 16),
 
                     SizedBox(width: 10),
 
-                    Text("(${widget.numOfPWRate})", style: AppTextStyles.subtext1)
-
+                    Text(
+                      "(${widget.numOfPWRate})",
+                      style: AppTextStyles.subtext1,
+                    ),
                   ],
                 ),
 
@@ -267,27 +244,25 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
                         ),
 
                         // A box used for alignment
-
                         SizedBox(height: 4.5),
-                        
+
                         Container(
                           color: const Color(0xFFD9D9D9),
                           child: SizedBox(height: 100, width: 130),
-                        )
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
 
                 // Basically a divider ----------------------------------
-
                 Divider(),
 
                 // Location and Contact
                 _infoTile(Icons.location_on, widget.address),
 
                 Divider(),
-                
+
                 _infoTile(Icons.phone, widget.phoneNumber),
 
                 Divider(),
@@ -297,7 +272,10 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
                 Divider(),
 
                 // Features / Amenities
-                Text("Features", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(
+                  "Features",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 SizedBox(height: 5),
                 // Wrap(
                 //   spacing: 10,
@@ -325,12 +303,12 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
             ),
           );
         },
-      )
+      ),
     );
   }
 
-// custom widget
-// location, phone number, social media link
+  // custom widget
+  // location, phone number, social media link
 
   Widget _infoTile(IconData icon, String text) {
     return ListTile(
@@ -339,8 +317,8 @@ class _CampgroundSheetState extends State<CampgroundSheet> {
     );
   }
 
-// custom widget
-// used for tags
+  // custom widget
+  // used for tags
 
   Widget _feature(String label, bool available) {
     return Chip(
