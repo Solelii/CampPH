@@ -267,159 +267,174 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onVerticalDragEnd: (details) {
-        if (details.primaryVelocity! > 500) {
-          widget.closeSheet();
-        }
-      },
-      child: NotificationListener<DraggableScrollableNotification>(
-        onNotification: (notification) {
-          setState(() {
-            _isExpanded = notification.extent > 0.8;
-          });
-          return true;
-        },
-        child: DraggableScrollableSheet(
-          initialChildSize: 0.25,
-          minChildSize: 0.15,
-          maxChildSize: 0.95,
-          snap: true,
-          snapSizes: const [0.25, 0.5, 0.95],
-          builder: (context, scrollController) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.95),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
+    return DraggableScrollableSheet(
+      initialChildSize: 0.25,
+      minChildSize: 0.15,
+      maxChildSize: 0.95,
+      snap: true,
+      snapSizes: const [0.25, 0.5, 0.95],
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.95),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, -2),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Drag handle
-                  Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  // Content
-                  Expanded(
-                    child: ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      children: [
-                        // Title and bookmark
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                widget.name,
-                                style: AppTextStyles.header2,
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.bookmark_border),
-                              onPressed: () {},
-                            ),
-                          ],
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Draggable header area
+              GestureDetector(
+                onVerticalDragUpdate: (details) {
+                  if (scrollController.position.pixels <= 0) {
+                    scrollController.jumpTo(0);
+                    scrollController.position.moveTo(
+                      scrollController.position.pixels - details.delta.dy,
+                    );
+                  }
+                },
+                onVerticalDragEnd: (details) {
+                  if (scrollController.position.pixels <= 0 && 
+                      details.primaryVelocity! > 300) {
+                    widget.closeSheet();
+                  }
+                },
+                child: Container(
+                  color: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Column(
+                    children: [
+                      // Drag handle
+                      Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[300],
+                          borderRadius: BorderRadius.circular(2),
                         ),
-
-                        // Rating
-                        Row(
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
                           children: [
-                            Text(
-                              widget.rating.toString(),
-                              style: AppTextStyles.subtext1,
-                            ),
-                            const SizedBox(width: 8),
+                            // Title and bookmark
                             Row(
-                              children: List.generate(
-                                5,
-                                (index) => Icon(
-                                  Icons.star,
-                                  size: 16,
-                                  color: index < widget.rating
-                                      ? AppColors.yellow
-                                      : AppColors.gray,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    widget.name,
+                                    style: AppTextStyles.header2,
+                                  ),
                                 ),
-                              ),
+                                IconButton(
+                                  icon: const Icon(Icons.bookmark_border),
+                                  onPressed: () {},
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "(${widget.numOfPWRate})",
-                              style: AppTextStyles.subtext1,
+                            // Rating
+                            Row(
+                              children: [
+                                Text(
+                                  widget.rating.toString(),
+                                  style: AppTextStyles.subtext1,
+                                ),
+                                const SizedBox(width: 8),
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                    (index) => Icon(
+                                      Icons.star,
+                                      size: 16,
+                                      color: index < widget.rating
+                                          ? AppColors.yellow
+                                          : AppColors.gray,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "(${widget.numOfPWRate})",
+                                  style: AppTextStyles.subtext1,
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
-
-                        // Quick actions
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            _buildQuickAction(Icons.directions, 'Directions'),
-                            _buildQuickAction(Icons.save, 'Save'),
-                            _buildQuickAction(Icons.share, 'Share'),
-                            _buildQuickAction(Icons.photo_camera, 'Add photo'),
-                          ],
-                        ),
-                        const Divider(height: 32),
-
-                        // Images
-                        _buildImageGrid(),
-                        const SizedBox(height: 24),
-
-                        // Location and contact info
-                        _buildInfoTile(Icons.location_on, widget.address),
-                        if (widget.phoneNumber.isNotEmpty)
-                          _buildInfoTile(Icons.phone, widget.phoneNumber),
-                        if (widget.socialMediaLink.isNotEmpty)
-                          _buildInfoTile(Icons.link, widget.socialMediaLink),
-                        const Divider(height: 32),
-
-                        // Description
-                        Text('About', style: AppTextStyles.header2),
-                        const SizedBox(height: 8),
-                        Text(
-                          widget.description,
-                          style: AppTextStyles.body1,
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Natural features
-                        Text('Natural Features', style: AppTextStyles.header2),
-                        const SizedBox(height: 8),
-                        Text(
-                          widget.naturalFeature,
-                          style: AppTextStyles.body1,
-                        ),
-                        const SizedBox(height: 24),
-
-                        // Amenities
-                        Text('Amenities', style: AppTextStyles.header2),
-                        const SizedBox(height: 16),
-                        _buildAmenitiesGrid(),
-                        const SizedBox(height: 32),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              // Scrollable content
+              Expanded(
+                child: ListView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  children: [
+                    const SizedBox(height: 16),
+                    // Quick actions
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildQuickAction(Icons.directions, 'Directions'),
+                        _buildQuickAction(Icons.save, 'Save'),
+                        _buildQuickAction(Icons.share, 'Share'),
+                        _buildQuickAction(Icons.photo_camera, 'Add photo'),
                       ],
                     ),
-                  ),
-                ],
+                    const Divider(height: 32),
+
+                    // Images
+                    _buildImageGrid(),
+                    const SizedBox(height: 24),
+
+                    // Location and contact info
+                    _buildInfoTile(Icons.location_on, widget.address),
+                    if (widget.phoneNumber.isNotEmpty)
+                      _buildInfoTile(Icons.phone, widget.phoneNumber),
+                    if (widget.socialMediaLink.isNotEmpty)
+                      _buildInfoTile(Icons.link, widget.socialMediaLink),
+                    const Divider(height: 32),
+
+                    // Description
+                    Text('About', style: AppTextStyles.header2),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.description,
+                      style: AppTextStyles.body1,
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Natural features
+                    Text('Natural Features', style: AppTextStyles.header2),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.naturalFeature,
+                      style: AppTextStyles.body1,
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Amenities
+                    Text('Amenities', style: AppTextStyles.header2),
+                    const SizedBox(height: 16),
+                    _buildAmenitiesGrid(),
+                    const SizedBox(height: 32),
+                  ],
+                ),
               ),
-            );
-          },
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 
