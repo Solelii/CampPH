@@ -4,6 +4,7 @@ import 'package:campph/themes/app_colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:campph/services/camp_service.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CampFormWidget extends StatefulWidget {
   final LatLng? initialLocation;
@@ -205,12 +206,21 @@ class _CampFormWidgetState extends State<CampFormWidget> {
                             return;
                           }
 
+                          final user = FirebaseAuth.instance.currentUser;
+                          if (user == null) {
+                            _showErrorFlushbar(
+                              'You must be logged in to save a camp.',
+                            );
+                            return;
+                          }
+
                           try {
                             await CampFirestoreService().saveCampData(
                               location: _selectedLocation!,
                               name: _nameController.text.trim(),
                               description: _descriptionController.text.trim(),
                               tags: _selectedTags,
+                              ownerId: user.uid, // <-- Pass ownerId
                             );
 
                             if (mounted) {
@@ -219,7 +229,6 @@ class _CampFormWidgetState extends State<CampFormWidget> {
                               await Future.delayed(
                                 const Duration(milliseconds: 500),
                               );
-
                               Navigator.pop(context);
                             }
                           } catch (e) {

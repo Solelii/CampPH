@@ -9,6 +9,7 @@ class CampFirestoreService {
     required String name,
     required String description,
     required Set<String> tags,
+    required String ownerId, // <-- Add this
   }) async {
     final DateTime now = DateTime.now();
 
@@ -30,10 +31,12 @@ class CampFirestoreService {
         'CampFeatures': features,
         'CampName': name,
         'CampDescription': description,
+        'ownerId': ownerId, // <-- Save owner ID
+        'bookmarked': false, // Optional default
       });
     } catch (e) {
       print('Error saving camp data: $e');
-      rethrow; // or handle as needed
+      rethrow;
     }
   }
 }
