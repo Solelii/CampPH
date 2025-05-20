@@ -76,7 +76,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
     final features = List<String>.from(camp['CampFeatures'] ?? []);
 
     if (features.contains('Glamping')) {
-      return 'assets/images/markers/glamping.png';
+      if (features.contains('Private')) {
+        return 'assets/images/markers/glamping.png';
+      } else {
+        return 'assets/images/markers/glamping_public.png';
+      }
     }
     if (_hasWaterFeature(features)) {
       return isPublic

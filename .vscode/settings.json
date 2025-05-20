@@ -1,3 +1,4 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "cmake.sourceDirectory": "/home/khurt-andrie-dilanco/Documents/School/3rd year/Second Sem/Mobile Computing and Communications/Project/Project/camph/linux"
 }

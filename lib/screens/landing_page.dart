@@ -17,9 +17,11 @@ class LandingPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Logo',
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            Image.asset(
+              'assets/images/Icon.png',
+              width: 100,
+              height: 100,
+              fit: BoxFit.contain,
             ),
 
             const SizedBox(height: 40),
