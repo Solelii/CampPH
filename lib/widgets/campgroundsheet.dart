@@ -25,6 +25,8 @@ import 'package:campph/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:campph/data_class/data_class.dart';
 import 'package:campph/services/bookmark_service.dart';
+import 'package:campph/widgets/addreview_widget.dart';
+import 'package:campph/services/review_service.dart';
 
 class CampgroundSheet extends StatefulWidget {
   /*
@@ -144,12 +146,105 @@ class _CampgroundSheetState extends State<CampgroundSheet>
   double _currentSnap = 0.25; // Start at peek view
   late bool _isBookmarked;
 
+  double _averageRating = 0.0;
+  bool _isLoadingAverage = true;
+
+  final ReviewFirestoreService _reviewService = ReviewFirestoreService();
+  List<Map<String, dynamic>> _reviews = [];
+  bool _isLoadingReviews = true;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _sheetController = DraggableScrollableController();
     _isBookmarked = widget.isBookmarked;
+    _loadReviews();
+    _loadAverageRating(); // add this
+  }
+
+  Future<void> _loadAverageRating() async {
+    final avg = await _reviewService.calculateAverageRating(widget.campId);
+    setState(() {
+      _averageRating = avg;
+      _isLoadingAverage = false;
+    });
+  }
+
+  Future<void> _loadReviews() async {
+    setState(() {
+      _isLoadingReviews = true;
+    });
+    final reviews = await _reviewService.getReviewsForCamp(widget.campId);
+    setState(() {
+      _reviews = reviews;
+      _isLoadingReviews = false;
+    });
+  }
+
+  void _onAddReviewPressed() async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder:
+          (context) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+              left: 20,
+              right: 20,
+              top: 20,
+            ),
+            child: AddReviewForm(campId: widget.campId),
+          ),
+    );
+    _loadReviews();
+    _loadAverageRating(); // Re-fetch average after adding review
+  }
+
+  Widget _buildReviewList() {
+    if (_isLoadingReviews) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_reviews.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Text(
+          'There are currently no reviews for this camp',
+          style: TextStyle(fontSize: 16),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _reviews.length,
+      separatorBuilder: (_, __) => const Divider(),
+      itemBuilder: (context, index) {
+        final review = _reviews[index];
+        return ListTile(
+          title: Text(review['username'] ?? 'Anonymous'),
+          subtitle: Text(review['comment'] ?? ''),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+              5,
+              (i) => Icon(
+                i < (review['rating'] ?? 0) ? Icons.star : Icons.star_border,
+                color: Colors.amber,
+                size: 16,
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _toggleBookmark() async {
@@ -345,31 +440,56 @@ class _CampgroundSheetState extends State<CampgroundSheet>
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Text(
-                            "${widget.rating}",
-                            style: AppTextStyles.subtext1,
+                      _isLoadingAverage
+                          ? const CircularProgressIndicator(strokeWidth: 2)
+                          : Row(
+                            children: [
+                              Text(
+                                _averageRating.toStringAsFixed(1),
+                                style: AppTextStyles.subtext1,
+                              ),
+                              const SizedBox(width: 4),
+                              Stack(
+                                children: [
+                                  Row(
+                                    children: List.generate(
+                                      5,
+                                      (index) => Icon(
+                                        Icons.star,
+                                        size: 16,
+                                        color: AppColors.gray,
+                                      ),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      ...List.generate(
+                                        _averageRating.floor(),
+                                        (index) => Icon(
+                                          Icons.star,
+                                          size: 16,
+                                          color: AppColors.yellow,
+                                        ),
+                                      ),
+                                      if (_averageRating -
+                                              _averageRating.floor() >
+                                          0)
+                                        Icon(
+                                          Icons.star_half,
+                                          size: 16,
+                                          color: AppColors.yellow,
+                                        ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                "(${_reviews.length})",
+                                style: AppTextStyles.subtext1,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 4),
-                          ...List.generate(
-                            5,
-                            (i) => Icon(
-                              Icons.star,
-                              size: 16,
-                              color:
-                                  i < widget.rating
-                                      ? AppColors.yellow
-                                      : AppColors.gray,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "(${widget.numOfPWRate})",
-                            style: AppTextStyles.subtext1,
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -531,7 +651,40 @@ class _CampgroundSheetState extends State<CampgroundSheet>
                               ],
                             ),
                             // REVIEWS tab
-                            const Center(child: Text('Reviews coming soon')),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    onPressed: _onAddReviewPressed,
+                                    icon: const Icon(Icons.rate_review),
+                                    label: const Text('Add Review'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.darkGreen,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child:
+                                      _reviews.isEmpty
+                                          ? const Center(
+                                            child: Text(
+                                              'No reviews yet',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          )
+                                          : _buildReviewList(),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
