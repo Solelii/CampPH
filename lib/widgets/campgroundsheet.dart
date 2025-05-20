@@ -20,14 +20,13 @@
     
  */
 
-
 import 'package:campph/themes/app_colors.dart';
 import 'package:campph/themes/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:campph/data_class/data_class.dart';
+import 'package:campph/services/bookmark_service.dart';
 
 class CampgroundSheet extends StatefulWidget {
-
   /*
 
     camping ground info to be fetched
@@ -35,7 +34,7 @@ class CampgroundSheet extends StatefulWidget {
     basta si info ni
 
   */
-  
+
   final void Function() closeSheet;
 
   final String name;
@@ -86,12 +85,11 @@ class CampgroundSheet extends StatefulWidget {
   final List<String> rules;
 
   final bool visibility;
+  final bool isBookmarked;
+  final String campId;
 
   const CampgroundSheet({
     super.key,
-
-    // Campsite general info
-
     required this.name,
     required this.isPublic,
     required this.rating,
@@ -100,83 +98,65 @@ class CampgroundSheet extends StatefulWidget {
     required this.socialMediaLink,
     required this.phoneNumber,
     required this.description,
-
-    // Natural features nearby
-
     required this.naturalFeature,
-
-    // Pictures
-
     required this.imageUrls,
-
-    // Campsite or Glampsite
-
     required this.isGlampingSite,
-
-    // Types of shelters (bell tent, safari tent, etc.)
-
     required this.typeOfShelter,
-
-    // Units and amenities
-
     required this.listOfUnitsAndAmenities,
-
-    // Amenities
-
     required this.outdoorGrill,
     required this.firePitOrBonfire,
     required this.tentRental,
     required this.hammockRental,
-
     required this.soap,
     required this.hairDryer,
     required this.bathrobeOrTowel,
     required this.bidet,
-
     required this.privateAccess,
     required this.emergencyCallSystem,
     required this.guardsAvailable,
     required this.firstAidKit,
     required this.securityCameras,
     required this.pwdFriendly,
-
     required this.powerSource,
     required this.electricFan,
     required this.airConditioning,
     required this.drinkingOrWashingWater,
-
     required this.drinksAllowed,
     required this.petsAllowed,
-
-    // Rules for campers
-    
     required this.rules,
-
-    // Visibility
-
     required this.visibility,
-
     required this.closeSheet,
-
+    required this.isBookmarked,
+    required this.campId,
   });
 
   @override
   State<CampgroundSheet> createState() => _CampgroundSheetState();
 }
 
-class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProviderStateMixin {
+class _CampgroundSheetState extends State<CampgroundSheet>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isDescriptionExpanded = false;
   // Sheet controller to manage snap points
   DraggableScrollableController? _sheetController;
   // Current snap position
   double _currentSnap = 0.25; // Start at peek view
+  late bool _isBookmarked;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _sheetController = DraggableScrollableController();
+    _isBookmarked = widget.isBookmarked;
+  }
+
+  Future<void> _toggleBookmark() async {
+    await BookmarkService().toggleBookmark(widget.campId);
+    setState(() {
+      _isBookmarked = !_isBookmarked;
+    });
   }
 
   @override
@@ -197,7 +177,7 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
 
   Widget _buildImageGrid() {
     return AspectRatio(
-      aspectRatio: 16/9,
+      aspectRatio: 16 / 9,
       child: Row(
         children: [
           // Large image on the left (2/3 width)
@@ -206,14 +186,16 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
             child: Container(
               margin: const EdgeInsets.only(right: 2),
               color: Colors.grey[300],
-              child: widget.imageUrls.isNotEmpty
-                ? Image.network(
-                    widget.imageUrls[0],
-                    fit: BoxFit.cover,
-                  )
-                : const Center(
-                    child: Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
-                  ),
+              child:
+                  widget.imageUrls.isNotEmpty
+                      ? Image.network(widget.imageUrls[0], fit: BoxFit.cover)
+                      : const Center(
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: 40,
+                          color: Colors.grey,
+                        ),
+                      ),
             ),
           ),
           // Two smaller images on the right (1/3 width)
@@ -224,27 +206,37 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 2),
                     color: Colors.grey[300],
-                    child: widget.imageUrls.length > 1
-                      ? Image.network(
-                          widget.imageUrls[1],
-                          fit: BoxFit.cover,
-                        )
-                      : const Center(
-                          child: Icon(Icons.image_not_supported, size: 30, color: Colors.grey),
-                        ),
+                    child:
+                        widget.imageUrls.length > 1
+                            ? Image.network(
+                              widget.imageUrls[1],
+                              fit: BoxFit.cover,
+                            )
+                            : const Center(
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                            ),
                   ),
                 ),
                 Expanded(
                   child: Container(
                     color: Colors.grey[300],
-                    child: widget.imageUrls.length > 2
-                      ? Image.network(
-                          widget.imageUrls[2],
-                          fit: BoxFit.cover,
-                        )
-                      : const Center(
-                          child: Icon(Icons.image_not_supported, size: 30, color: Colors.grey),
-                        ),
+                    child:
+                        widget.imageUrls.length > 2
+                            ? Image.network(
+                              widget.imageUrls[2],
+                              fit: BoxFit.cover,
+                            )
+                            : const Center(
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 30,
+                                color: Colors.grey,
+                              ),
+                            ),
                   ),
                 ),
               ],
@@ -261,11 +253,7 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
       children: [
         Icon(icon, size: 24, color: AppColors.black),
         const SizedBox(height: 4),
-        Text(
-          label,
-          style: AppTextStyles.body2,
-          textAlign: TextAlign.center,
-        ),
+        Text(label, style: AppTextStyles.body2, textAlign: TextAlign.center),
       ],
     );
   }
@@ -302,7 +290,9 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -345,8 +335,13 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.bookmark_border),
-                            onPressed: () {},
+                            icon: Icon(
+                              _isBookmarked
+                                  ? Icons.bookmark
+                                  : Icons.bookmark_border,
+                              color: _isBookmarked ? AppColors.darkGreen : null,
+                            ),
+                            onPressed: _toggleBookmark,
                           ),
                         ],
                       ),
@@ -362,9 +357,10 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                             (i) => Icon(
                               Icons.star,
                               size: 16,
-                              color: i < widget.rating
-                                  ? AppColors.yellow
-                                  : AppColors.gray,
+                              color:
+                                  i < widget.rating
+                                      ? AppColors.yellow
+                                      : AppColors.gray,
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -389,10 +385,7 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                         controller: _tabController,
                         labelColor: AppColors.black,
                         unselectedLabelColor: AppColors.gray,
-                        tabs: const [
-                          Tab(text: 'ABOUT'),
-                          Tab(text: 'REVIEWS'),
-                        ],
+                        tabs: const [Tab(text: 'ABOUT'), Tab(text: 'REVIEWS')],
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.7,
@@ -417,22 +410,31 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                                   children: [
                                     Text(
                                       widget.description,
-                                      maxLines: _isDescriptionExpanded ? null : 3,
-                                      overflow: _isDescriptionExpanded ? null : TextOverflow.ellipsis,
+                                      maxLines:
+                                          _isDescriptionExpanded ? null : 3,
+                                      overflow:
+                                          _isDescriptionExpanded
+                                              ? null
+                                              : TextOverflow.ellipsis,
                                       style: AppTextStyles.body1,
                                     ),
                                     TextButton(
                                       onPressed: () {
                                         setState(() {
-                                          _isDescriptionExpanded = !_isDescriptionExpanded;
+                                          _isDescriptionExpanded =
+                                              !_isDescriptionExpanded;
                                         });
                                       },
                                       child: Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            _isDescriptionExpanded ? 'Less' : 'More',
-                                            style: TextStyle(color: AppColors.darkGreen),
+                                            _isDescriptionExpanded
+                                                ? 'Less'
+                                                : 'More',
+                                            style: TextStyle(
+                                              color: AppColors.darkGreen,
+                                            ),
                                           ),
                                           Icon(
                                             _isDescriptionExpanded
@@ -493,10 +495,19 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                                   crossAxisSpacing: 16,
                                   children: [
                                     if (widget.drinksAllowed)
-                                      _buildAmenityTile(Icons.local_bar, 'Camping Fire\nallowed'),
+                                      _buildAmenityTile(
+                                        Icons.local_bar,
+                                        'Camping Fire\nallowed',
+                                      ),
                                     if (widget.petsAllowed)
-                                      _buildAmenityTile(Icons.pets, 'Pets Allowed'),
-                                    _buildAmenityTile(Icons.table_restaurant, 'Picnic Table'),
+                                      _buildAmenityTile(
+                                        Icons.pets,
+                                        'Pets Allowed',
+                                      ),
+                                    _buildAmenityTile(
+                                      Icons.table_restaurant,
+                                      'Picnic Table',
+                                    ),
                                     _buildAmenityTile(Icons.waves, 'Fishing'),
                                     if (widget.powerSource)
                                       _buildAmenityTile(Icons.power, 'Signal'),
@@ -506,11 +517,15 @@ class _CampgroundSheetState extends State<CampgroundSheet> with SingleTickerProv
                                 OutlinedButton(
                                   onPressed: () {},
                                   style: OutlinedButton.styleFrom(
-                                    side: BorderSide(color: AppColors.darkGreen),
+                                    side: BorderSide(
+                                      color: AppColors.darkGreen,
+                                    ),
                                   ),
                                   child: Text(
                                     'Show all amenities',
-                                    style: TextStyle(color: AppColors.darkGreen),
+                                    style: TextStyle(
+                                      color: AppColors.darkGreen,
+                                    ),
                                   ),
                                 ),
                               ],

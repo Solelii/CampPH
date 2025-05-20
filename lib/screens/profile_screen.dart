@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:campph/services/camp_service.dart';
 import 'package:campph/services/user_service.dart';
+import 'package:campph/widgets/navigation_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -184,14 +185,12 @@ class _ProfilePageState extends State<ProfilePage> {
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
-                  // Public Button
                   _buildToggleButton("Public", isPublic, () {
                     setState(() => isPublic = true);
                   }, activeColor: const Color(0xFF3B862D)),
 
                   const SizedBox(width: 10),
 
-                  // Private Button
                   _buildToggleButton("Private", !isPublic, () {
                     setState(() => isPublic = false);
                   }, activeColor: const Color(0xFFEFAD42)),
@@ -200,7 +199,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(width: 1.5, height: 30, color: Colors.grey[700]),
                   const SizedBox(width: 10),
 
-                  // Feature Tags
                   ...selectableButtons.entries.map((entry) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
@@ -225,10 +223,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   children:
                       camps
                           .where((camp) {
-                            if (isPublic && camp.campType != 'Public')
+                            if (isPublic && camp.campType != 'Public') {
                               return false;
-                            if (!isPublic && camp.campType != 'Private')
+                            }
+                            if (!isPublic && camp.campType != 'Private') {
                               return false;
+                            }
                             if (selectedTags.isNotEmpty &&
                                 !camp.features.any(
                                   (f) => selectedTags.contains(f),
@@ -241,6 +241,17 @@ class _ProfilePageState extends State<ProfilePage> {
                             return Card(
                               margin: const EdgeInsets.symmetric(vertical: 6),
                               child: ListTile(
+                                onTap: () {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => NavigationWidget(
+                                            campToOpen: camp.toMap(),
+                                          ),
+                                    ),
+                                  );
+                                },
+
                                 title: Text(
                                   camp.name,
                                   style: const TextStyle(
@@ -253,23 +264,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     Text(
                                       camp.description,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.normal,
-                                      ),
+                                      style: const TextStyle(fontSize: 14),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Owner: ${camp.ownerUsername ?? 'Unknown'}',
+                                      'Owner: ${camp.ownerUsername}',
                                       style: const TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.normal,
                                         color: Colors.black87,
                                       ),
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Type: ${camp.campType}',
+                                      'Type: ${camp.campType ?? 'Unknown'}',
                                       style: const TextStyle(
                                         color: Colors.grey,
                                         fontSize: 14,
@@ -284,13 +291,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                   ],
                                 ),
-                                trailing:
-                                    camp.bookmarked
-                                        ? const Icon(
-                                          Icons.bookmark,
-                                          color: Colors.green,
-                                        )
-                                        : null,
                               ),
                             );
                           })

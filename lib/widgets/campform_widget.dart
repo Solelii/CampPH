@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:campph/themes/app_colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:campph/services/camp_service.dart';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,7 +35,14 @@ class _CampFormWidgetState extends State<CampFormWidget> {
   late LatLng? _selectedLocation;
 
   // List of features (excluding Public/Private)
-  final List<String> _features = ['River', 'Beach', 'Lake', 'Mountain', 'Woods', 'Glamping'];
+  final List<String> _features = [
+    'River',
+    'Beach',
+    'Lake',
+    'Mountain',
+    'Woods',
+    'Glamping',
+  ];
 
   @override
   void initState() {
@@ -50,9 +56,9 @@ class _CampFormWidgetState extends State<CampFormWidget> {
       if (tag == 'Glamping') {
         if (!_selectedTags.contains(tag)) {
           // When selecting Glamping
-          _selectedTags.remove('Public');  // Remove Public if selected
-          _selectedTags.add('Private');    // Force Private
-          _selectedTags.add(tag);          // Add Glamping
+          _selectedTags.remove('Public'); // Remove Public if selected
+          _selectedTags.add('Private'); // Force Private
+          _selectedTags.add(tag); // Add Glamping
         } else {
           // When unselecting Glamping
           _selectedTags.remove(tag);
@@ -66,7 +72,7 @@ class _CampFormWidgetState extends State<CampFormWidget> {
           // If selecting Public and Glamping is selected, remove Glamping
           _selectedTags.remove('Glamping');
         }
-        
+
         // Remove the opposite type
         if (tag == 'Public') _selectedTags.remove('Private');
         if (tag == 'Private') _selectedTags.remove('Public');

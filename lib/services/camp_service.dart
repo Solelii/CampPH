@@ -8,8 +8,8 @@ class Camp {
   final String? campType;
   final List<String> features;
   final GeoPoint location;
-  final bool bookmarked;
-  final String ownerUsername; // <-- Added this
+  final String ownerUsername;
+  final String? ownerId; // Added ownerId field because toMap uses it
 
   Camp({
     required this.id,
@@ -18,8 +18,8 @@ class Camp {
     required this.campType,
     required this.features,
     required this.location,
-    required this.bookmarked,
-    required this.ownerUsername, // <-- Added this
+    required this.ownerUsername,
+    this.ownerId,
   });
 
   factory Camp.fromDoc(DocumentSnapshot doc) {
@@ -31,8 +31,8 @@ class Camp {
       campType: data['CampType'],
       features: List<String>.from(data['CampFeatures'] ?? []),
       location: data['location'],
-      bookmarked: data['bookmarked'] ?? false,
-      ownerUsername: data['ownerUsername'] ?? 'Unknown', // <-- Added this
+      ownerUsername: data['ownerUsername'] ?? 'Unknown',
+      ownerId: data['ownerId'],
     );
   }
 }
@@ -40,23 +40,22 @@ class Camp {
 class CampFirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Stream to get all camps in real-time
   Stream<List<Map<String, dynamic>>> getAllCamps() {
     return _firestore
         .collection('camps')
         .orderBy('DateCreated', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        final data = doc.data();
-        final GeoPoint geoPoint = data['location'] as GeoPoint;
-        return {
-          'id': doc.id,
-          ...data,
-          'location': LatLng(geoPoint.latitude, geoPoint.longitude),
-        };
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            final data = doc.data();
+            final GeoPoint geoPoint = data['location'] as GeoPoint;
+            return {
+              'id': doc.id,
+              ...data,
+              'location': LatLng(geoPoint.latitude, geoPoint.longitude),
+            };
+          }).toList();
+        });
   }
 
   Future<void> saveCampData({
@@ -68,7 +67,6 @@ class CampFirestoreService {
     required String ownerUsername,
   }) async {
     final DateTime now = DateTime.now();
-
     final String? campType =
         tags.contains('Public')
             ? 'Public'
@@ -89,7 +87,6 @@ class CampFirestoreService {
         'CampDescription': description,
         'ownerId': ownerId,
         'ownerUsername': ownerUsername,
-        'bookmarked': false,
       });
     } catch (e) {
       print('Error saving camp data: $e');
@@ -99,24 +96,80 @@ class CampFirestoreService {
 
   Future<List<Camp>> getCampsOwnedOrBookmarked(String currentUserId) async {
     try {
-      final ownerQuery =
+      // Fetch camps owned by the user
+      final ownerCampsQuery =
           await _firestore
               .collection('camps')
               .where('ownerId', isEqualTo: currentUserId)
               .get();
 
-      final bookmarkedQuery =
-          await _firestore
-              .collection('camps')
-              .where('bookmarked', isEqualTo: true)
-              .get();
+      // Fetch bookmarked camp IDs from bookmarks collection
+      final bookmarkedDoc =
+          await _firestore.collection('bookmarks').doc(currentUserId).get();
 
-      final allDocs = {...ownerQuery.docs, ...bookmarkedQuery.docs};
+      final List<String> bookmarkedIds =
+          bookmarkedDoc.exists
+              ? List<String>.from(bookmarkedDoc.data()?['campIds'] ?? [])
+              : [];
 
-      return allDocs.map((doc) => Camp.fromDoc(doc)).toList();
+      final bookmarkedCamps = <DocumentSnapshot>[];
+
+      if (bookmarkedIds.isNotEmpty) {
+        final chunks = _chunkList(bookmarkedIds, 10);
+        for (final chunk in chunks) {
+          final snap =
+              await _firestore
+                  .collection('camps')
+                  .where(FieldPath.documentId, whereIn: chunk)
+                  .get();
+          bookmarkedCamps.addAll(snap.docs);
+        }
+      }
+
+      // Combine and deduplicate camps
+      final Set<String> addedIds = {};
+      final List<Camp> allCamps = [];
+
+      for (final doc in [...ownerCampsQuery.docs, ...bookmarkedCamps]) {
+        if (!addedIds.contains(doc.id)) {
+          allCamps.add(Camp.fromDoc(doc));
+          addedIds.add(doc.id);
+        }
+      }
+
+      return allCamps;
     } catch (e) {
       print('Error fetching camps: $e');
       return [];
     }
+  }
+
+  List<List<String>> _chunkList(List<String> list, int chunkSize) {
+    final chunks = <List<String>>[];
+    for (var i = 0; i < list.length; i += chunkSize) {
+      chunks.add(
+        list.sublist(
+          i,
+          i + chunkSize > list.length ? list.length : i + chunkSize,
+        ),
+      );
+    }
+    return chunks;
+  }
+}
+
+// Extension to convert Camp instance to Map<String, dynamic>
+extension CampMapper on Camp {
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'CampName': name,
+      'CampDescription': description,
+      'CampType': campType,
+      'CampFeatures': features,
+      'location': LatLng(location.latitude, location.longitude),
+      'ownerId': ownerId,
+      'ownerUsername': ownerUsername,
+    };
   }
 }
